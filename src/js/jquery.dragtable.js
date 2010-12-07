@@ -85,10 +85,11 @@
 			//TODO: right now you can drag driectly using the handler, you have to click first, fix this, i think you can do it using the mouse widget
 			.find('thead th')
 			.bind('mousedown',function(e){
-				var $this = $(this);
-				var $dragDisplay = self.getCol($this.index());
+				var $this = $(this),
+				$dragDisplay = self.getCol($this.index());
 				//console.log(dragDisplay)
 				$dragDisplay
+				.focus()
 				.appendTo(document.body)
 				
 				.css({
@@ -104,13 +105,14 @@
 					
 					handle: 'th',
 					axis: 'x',
-					containment:self.element,
+					containment: self.element,
 					start: function(e,ui){
 						self.prevMouseX = e.pageX;
 						//TODO: trigger widget option here
 						
 					},
 					drag: function(e, ui){
+						console.log(e);
 						//TODO: trigger widget option here
 						//TODO: setup containment for the col in drag
 						var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
@@ -229,12 +231,21 @@
 	        }
 	        return attrsString;
 		},
-		
+		/*
+		 * currently not uses
+		 */
 		_swapNodes: function(a, b) {
         	var aparent = a.parentNode,
         	asibling = a.nextSibling === b ? a : a.nextSibling;
         	b.parentNode.insertBefore(a, b);
         	aparent.insertBefore(b, asibling);
+     	},
+     	/*
+     	 * faster than swap nodes
+     	 * only works if a b parent are the same, works great for colums
+     	 */
+     	_swapCells: function(a, b) {
+        	a.parentNode.insertBefore(b, a);
      	},
      	/*
      	 * use this instead of jquerys offset, in the cases were using is faster than creating a jquery collection
@@ -251,9 +262,6 @@
 			}
 		},
 		
-		_dragColEventHandler: function(e){
-			
-		},
 		/*
 		 * build copy of table and attach the selected col to it, also removes the select col out of the table
 		 * @returns copy of table with the selected col
@@ -321,12 +329,7 @@
 					target.appendChild(tr);
 					//collection[i]=;
 				}
-				//console.log(collection);
-			
-		
 			});
-		 
-		 
 		// console.log($dragDisplay);
 		//console.profileEnd('selectCol')
 		 return $dragDisplay;
@@ -343,19 +346,20 @@
 			this.endIndex = to;
 			//console.log('to '+5)
 	        if(from < to) {
-	        	
+	        	//move right
 	        	for(var i = from; i < to; i++) {
 	        		var row2 = this._getCells(this.element[0],i+1);
 	        	//	console.log(row2)
 	        		for(var j = 0, length = row2.array.length; j < length; j++){
-	          			this._swapNodes(this.currentColumnCollection[j],row2.array[j]);
+	          			this._swapCells(this.currentColumnCollection[j],row2.array[j]);
 	          		}
 	          	}
 	        } else {
+	        	//move left
 	        	for(var i = from; i > to; i--) {
 	            	var row2 = this._getCells(this.element[0],i-1);
 	            	for(var j = 0, length = row2.array.length; j < length; j++){
-	          			this._swapNodes(this.currentColumnCollection[j],row2.array[j]);
+	          			this._swapCells(row2.array[j],this.currentColumnCollection[j]);
 	          		}
 	        	}
 	        }
