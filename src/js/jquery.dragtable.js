@@ -55,6 +55,9 @@
   		eventWidgetPrefix: 'dragtable',
   		
 		options: {
+			//used to the col headers
+			dataHeader:'data-header',
+			//TODO: Faze these out
 			// when a col is dragged use this to find the symantic elements, for speed
 			tableElemIndex:{  
 				head: '0',
@@ -91,7 +94,9 @@
 				$dragDisplay
 				.focus()
 				.appendTo(document.body)
-				
+				.select(function(){
+					return false;
+				})
 				.css({
 					position:'absolute'
 				})
@@ -112,7 +117,7 @@
 						
 					},
 					drag: function(e, ui){
-						console.log(e);
+						//console.log(e);
 						//TODO: trigger widget option here
 						//TODO: setup containment for the col in drag
 						var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
@@ -122,7 +127,7 @@
 							var threshold = columnPos.x - half;
 							if(ui.position.left < threshold){
 								//console.info('move left');
-								self.swapCol(self.startIndex-1);
+								self._swapCol(self.startIndex-1);
 								
 							}
 
@@ -130,7 +135,7 @@
 							var threshold = columnPos.x + half;
 							if(ui.position.left > threshold){
 								//console.info('move right');
-								self.swapCol(self.startIndex+1);
+								self._swapCol(self.startIndex+1);
 								
 							}
 						}
@@ -340,13 +345,18 @@
 		/*
 		 * move column left or right
 		 */
-		swapCol: function( to ){
+		_swapCol: function( to ){
+			
+			//cant swap if same postion
+			if(to == this.startIndex){
+				return false;
+			}
 			
 			from = this.startIndex;
 			this.endIndex = to;
-			//console.log('to '+5)
+			
 	        if(from < to) {
-	        	//move right
+	        	//console.log('move right');
 	        	for(var i = from; i < to; i++) {
 	        		var row2 = this._getCells(this.element[0],i+1);
 	        	//	console.log(row2)
@@ -355,7 +365,7 @@
 	          		}
 	          	}
 	        } else {
-	        	//move left
+	        	//console.log('move left');
 	        	for(var i = from; i > to; i--) {
 	            	var row2 = this._getCells(this.element[0],i-1);
 	            	for(var j = 0, length = row2.array.length; j < length; j++){
@@ -383,16 +393,66 @@
 				td.className = td.className.replace(' dragtable-col-placeholder','');
 			}
 			
-			
-			// $()
-			// //this is way to slow
-			// .removeClass('dragtable-col-placeholder');
-			//console.profileEnd('dropCol');
-		},
-		
-				
-		destroy: function() {			
 
+		},
+		/*
+		 * get / set the current order of the cols
+		 */
+		order: function(order){
+			var self = this,
+			elem = self.element,
+			options = self.options,
+			headers = elem.find('thead tr:first').children('th');
+			
+			
+			if(order == undefined){
+				//get
+				var ret = [];
+				headers.each(function(){
+					var header = this.getAttribute(options.dataHeader);
+					if(header == null){
+						//the attr is missing so grab the text and use that
+						header = $(this).text();
+					}
+					
+					ret.push(header);
+					
+				});
+				
+				return ret;
+				
+			}else{
+				//set
+				//headers and order have to match up
+				if(order.length != headers.length){
+					//console.log('length not the same')
+					return self;
+				}
+				for(var i = 0, length = order.length; i < length; i++){
+					/*
+					 * get the current pos of the col make that the start position
+					 * i == equal the end
+					 * then call dropCol
+					 */
+					 
+					 var start = headers.filter('['+ options.dataHeader +'='+ order[i] +']').index();
+					 if(start != -1){
+					 	//console.log('start index '+start+' - swap to '+i);
+					 	self.startIndex = start;
+					 	
+						self.currentColumnCollection = self._getCells(self.element[0], start).array;
+
+					 	self._swapCol(i);
+					 }
+					 
+					 
+				}
+				return self;
+			}
+		},
+				
+		destroy: function() {
+			return this;
 		}
 
         

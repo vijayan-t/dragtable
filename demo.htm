@@ -91,83 +91,14 @@ table tbody tr:nth-of-type(2n+1) td{
 <script type="text/javascript">
 $(document).ready(function(){
 	$('table').dragtable();
-	
-	// var $table = $('#one')
-	// 
-	// $table
-	// .find('thead th')
-	// // .bind('dragstart',function(){
-	// // 	console.log('drag start')
-	// // })
-	// .click(function(){
-	// 	/*
-	// 	 * steps 
-	// 	 * figure out what this's index is in relation to siblings
-	// 	 * build a temp table with the table col
-	// 	 * position temp table over the exsiting col
-	// 	 * add classes to the re table
-	// 	 * 
-	// 	 */
-	// 	 
-	// 	 var $this = $(this),
-	// 	 index = $this.index(),
-	// 	 
-	// 	 tableCopy = $table.clone();
-	// 	 
-	// 	 console.log('index of col '+index);
-	// 	 //setup the table copy, wil be used for the display of drag element
-	// 
-	// 	 //make sure we just have the base elemetns in the table
-	// 	 tableCopy
-	// 	 .css({
-	// 	 	'width':this.clientWidth
-	// 	 })
-	// 	 .children()
-	// 	 .children()
-	// 	 .remove();
-	// 	 
-	// 	 console.log(tableCopy);
-	// 	 
-	// 	 tableCopy
-	// 	 .children('thead')
-	// 	 .append($this.clone())
-	// 	 
-	// 	 $this.addClass('drag')
-	// 	 
-	// 	 var tableCopyTbody = tableCopy.children('tbody');
-	// 
-	// 
-	// 	 var tr = $table.children('tbody').children();
-	// 	 tr
-	// 	 .each(function(){
-	// 	 	var $this = $(this);
-	// 	 	//detach the selected col tr from the real table
-	// 	 	var td = $this.children(':eq('+index+')');
-	// 	 	
-	// 	 	newTd = td.clone();
-	// 	 	td.addClass('drag');
-	// 	 	
-	// 	 	var newTr = $this.clone();
-	// 	 	
-	// 	 	newTr.children().remove();
-	// 	 	newTr
-	// 	 	.append(newTd)
-	// 	 	
-	// 	 	tableCopyTbody
-	// 	 	.append(newTr);
-	// 	 });
-	// 	 
-	// 	 //console.log(tr.length);
-	// 	 
-	// 	 
-	// 
-	// 	 
-	// 	 
-	// 	 
-	// 	// $this.remove()
-	// 	// console.log(td);
-	// 	 
-	// })
+	$('a.order').click(function(){
+
+		console.log($('#one').dragtable('order'));
+		return false;
+	});
+	$('a.setorder').click(function(){
+		$('#one').dragtable('order',["first_name", "id", "last_name", "phone_number", "salary" , "color"])
+	})
 });
 	
 </script>
@@ -176,12 +107,12 @@ $(document).ready(function(){
 	<table id="one">
 		<thead class="test">
 			<tr>
-				<th>ID</th>
-				<th>first name</th>
-				<th>last name</th>
-				<th>phone number</th>
-				<th>team color</th>
-				<th>salary</th>
+				<th data-header="id">ID</th>
+				<th data-header="first_name">first name</th>
+				<th data-header="last_name">last name</th>
+				<th data-header="phone_number">phone number</th>
+				<th data-header="color">team color</th>
+				<th data-header="salary">salary made</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -227,6 +158,8 @@ $(document).ready(function(){
 			</tr>
 		</tbody>
 	</table>
+	<a class="order">get Col order</a> | <a class="setorder">set Col order</a>
+	
 	<h1>around 100 cells</h1>
 <hr />
 	<table id="three">
