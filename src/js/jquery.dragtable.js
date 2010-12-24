@@ -55,8 +55,12 @@
   		eventWidgetPrefix: 'dragtable',
   		
 		options: {
-			//used to the col headers
+			//used to the col headers, data containted in here is used to set / get the name of the col
 			dataHeader:'data-header',
+			
+			//optional call back used when the col order has changed
+			change: $.noop,
+			
 			//TODO: Faze these out
 			// when a col is dragged use this to find the symantic elements, for speed
 			tableElemIndex:{  
@@ -128,6 +132,7 @@
 							if(ui.position.left < threshold){
 								//console.info('move left');
 								self._swapCol(self.startIndex-1);
+								self._eventHelper('change',e);
 								
 							}
 
@@ -136,6 +141,7 @@
 							if(ui.position.left > threshold){
 								//console.info('move right');
 								self._swapCol(self.startIndex+1);
+								self._eventHelper('change',e);
 								
 							}
 						}
@@ -146,7 +152,7 @@
 					},
 					stop: function(e, ui){
 						//TODO: trigger widget option here
-						self.dropCol($dragDisplay);
+						self._dropCol($dragDisplay);
 						self.prevMouseX = 0;
 					}
 				})
@@ -266,7 +272,15 @@
 				return {'x':oElement.x, 'y':oElement.y };
 			}
 		},
-		
+		/*
+		 * used to tirgger optional events
+		 */
+		_eventHelper: function(eventName,eventObj){
+			this._trigger( eventName, eventObj, {
+				column: this.currentColumnCollection,
+				order: this.order()						
+			});
+		},
 		/*
 		 * build copy of table and attach the selected col to it, also removes the select col out of the table
 		 * @returns copy of table with the selected col
@@ -379,7 +393,7 @@
 		/*
 		 * called when drag start is finished
 		 */
-		dropCol: function($dragDisplay){
+		_dropCol: function($dragDisplay){
 		//	console.profile('dropCol');
 			var self = this;
 			
@@ -429,11 +443,6 @@
 					return self;
 				}
 				for(var i = 0, length = order.length; i < length; i++){
-					/*
-					 * get the current pos of the col make that the start position
-					 * i == equal the end
-					 * then call dropCol
-					 */
 					 
 					 var start = headers.filter('['+ options.dataHeader +'='+ order[i] +']').index();
 					 if(start != -1){
@@ -447,6 +456,7 @@
 					 
 					 
 				}
+				self._eventHelper('change',{});
 				return self;
 			}
 		},
