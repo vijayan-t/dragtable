@@ -76,10 +76,16 @@
 			var self = this,
 			o = self.options,
 			el = self.element;
-			 
+			
+			//grab the ths and the handles and bind them 
 			el.delegate('thead th:not( :has(' + o.handle + ')), ' + o.handle,'mousedown',function(e){
-				var $this = $(this),
-				$dragDisplay = self.getCol($this.index());
+				var $handle = $(this);
+				//make sure we are working with a th instead of a handle
+				if($handle.hasClass(o.handle.replace('.',''))){
+					$handle = $handle.closest('th');
+				}
+				
+				var $dragDisplay = self.getCol($handle.index());
 				//console.log(dragDisplay)
 				self._eventHelper('displayHelper',{},{
 					'draggable':$dragDisplay
@@ -101,8 +107,8 @@
 					
 				})
 				.draggable({
-					
-					handle: 'th',
+					handle:'thead th:not( :has(' + o.handle + ')), ' + o.handle,
+					//handle: 'th',
 					axis: 'x',
 					containment: self.element,
 					start: function(e,ui){
