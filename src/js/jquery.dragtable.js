@@ -25,8 +25,9 @@
  * 
  * TODO: 
  * add / create / edit css framework
- * add callback to tweak the drag display
  * add drag handles
+ * click event to handle drag
+ * ignore class
  * 
  * 
  * clean up the api - event driven like ui autocompleate
@@ -42,9 +43,14 @@
 		options: {
 			//used to the col headers, data containted in here is used to set / get the name of the col
 			dataHeader:'data-header',
-			
+			//handle
+			handle:'.dragtable-drag-handle',
 			//optional call back used when the col order has changed
 			change: $.noop,
+			
+			//called after we create the drag display allows user to customize the look of the col in drag
+			displayHelper: $.noop,
+			
 			
 			//TODO: Faze these out
 			// when a col is dragged use this to find the symantic elements, for speed
@@ -70,16 +76,15 @@
 			var self = this,
 			o = self.options,
 			el = self.element;
-			
-			
-			
-			el
-			//TODO: right now you can drag driectly using the handler, you have to click first, fix this, i think you can do it using the mouse widget
-			.find('thead th')
-			.bind('mousedown',function(e){
+			 
+			el.delegate('thead th:not( :has(' + o.handle + ')), ' + o.handle,'mousedown',function(e){
 				var $this = $(this),
 				$dragDisplay = self.getCol($this.index());
 				//console.log(dragDisplay)
+				self._eventHelper('displayHelper',{},{
+					'draggable':$dragDisplay
+				});
+				
 				$dragDisplay
 				.focus()
 				.appendTo(document.body)
@@ -107,8 +112,7 @@
 					},
 					drag: function(e, ui){
 						//console.log(e);
-						//TODO: trigger widget option here
-						//TODO: setup containment for the col in drag
+
 						var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
 						half = self.currentColumnCollection[0].clientWidth / 2;
 						//move left
@@ -136,7 +140,7 @@
 				
 					},
 					stop: function(e, ui){
-						//TODO: trigger widget option here
+						
 						self._dropCol($dragDisplay);
 						self.prevMouseX = 0;
 					}
@@ -260,11 +264,15 @@
 		/*
 		 * used to tirgger optional events
 		 */
-		_eventHelper: function(eventName,eventObj){
-			this._trigger( eventName, eventObj, {
-				column: this.currentColumnCollection,
-				order: this.order()						
-			});
+		_eventHelper: function(eventName ,eventObj, additionalData){
+			this._trigger( 
+				eventName, 
+				eventObj, 
+				$.extend({
+					column: this.currentColumnCollection,
+					order: this.order()						
+				},additionalData)
+			);
 		},
 		/*
 		 * build copy of table and attach the selected col to it, also removes the select col out of the table
@@ -282,7 +290,7 @@
 			eIndex = self.options.tableElemIndex,
 			//BUG: IE thinks that this table is disabled, dont know how that happend
 			$dragDisplay = $('<table '+self._getElementAttributes($table[0])+'></table>')
-			.addClass('dragtable-col-drag');
+			.addClass('dragtable-drag-col');
 			
 			//start and end are the same to start out with
 			self.startIndex = self.endIndex = index;
@@ -336,6 +344,7 @@
 			});
 		// console.log($dragDisplay);
 		//console.profileEnd('selectCol')
+		$dragDisplay  = $('<div class="dragtable-drag-wrapper"></div>').append($dragDisplay)
 		 return $dragDisplay;
 		},
 		
