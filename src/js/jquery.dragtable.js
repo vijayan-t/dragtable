@@ -1,52 +1,37 @@
 /*!
- * dragtable
- *
- * @Version 2.0
- *
- * Copyright (c) 2010, Andres Koetter akottr@gmail.com
- * Dual licensed under the MIT (MIT-LICENSE.txt)
- * and GPL (GPL-LICENSE.txt) licenses.
- *
- * Inspired by the the dragtable from Dan Vanderkam (danvk.org/dragtable/)
- * Thanks to the jquery and jqueryui comitters
+ * dragtable - jquery ui widget to re-order table columns 
+ * version 3.0
  * 
- * Any comment, bug report, feature-request is welcome
- * Feel free to contact me.
- */
-
-/*
  * Copyright (c) 2010, Jesse Baird <jebaird@gmail.com>
  * 12/2/2010
- * converted a jquery ui widget
+ * https://github.com/jebaird/dragtable
+ * 
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ * 
+ * 
+ * 
+ * Forked from https://github.com/akottr/dragtable - Andres Koetter akottr@gmail.com
+ * 
+ *
  * 
  * depends on ui draggable
  * 
+ * 
  * quick down and and dirty on how this works
+ * ###########################################
  * so when a column is selected we grab all of the cells in that row and clone append them to a semi copy of the parent table and the 
  * "real" cells get a place holder class witch is removed when the dragstop event is triggered
  * 
  * TODO: 
  * add / create / edit css framework
- * add options
- * 		on drag start
- * 		drag
- * 		stop
- * 		
- * add getColOrder - return array 
- * 		setColOrder - reorder the table col accoring to the data suppided to this
- * 		use data attr to set this up
+ * add callback to tweak the drag display
+ * add drag handles
+ * 
  * 
  * clean up the api - event driven like ui autocompleate
  * make it easy to have a button swap colums
  * 
- */
- 
- /* TOKNOW:
- * For IE7 you need this css rule:
- * table {
- *   border-collapse: collapse;
- * }
- * Or take a clean reset.css (see http://meyerweb.com/eric/tools/css/reset/)
  */
 
 (function($) {
