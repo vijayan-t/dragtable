@@ -150,9 +150,8 @@
 						self._dropCol($dragDisplay);
 						self.prevMouseX = 0;
 					}
-				})
-				
-				
+				});
+
 				
 				//############
 			});
