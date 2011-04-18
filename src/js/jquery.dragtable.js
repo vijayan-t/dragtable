@@ -89,13 +89,14 @@
 					'draggable':$dragDisplay
 				});
 				
-                //console.log( $dragDisplay, e );
+                //console.log( el, e );
                 
 				$dragDisplay
+                .focus()
 				.disableSelection()
 				.css({
 					position:'absolute',
-                    top: e.pageY,
+                    top: el[0].offsetTop,
                     left: e.pageX
 				})
                 .appendTo(document.body)
@@ -106,11 +107,11 @@
                 
                 $( document )
                 .disableSelection()
+                .css( 'cursor', 'move')
                 .bind('mousemove.dragtable', function( e ){
                     $dragDisplay
                     .css({
     					position:'absolute',
-                        //top: e.pageY,
                         left: e.pageX,
                         zindex: 100
 				    })
@@ -144,6 +145,9 @@
                 })
                 .one( 'mouseup.dragtable',function(){
                     $( document )
+                    .css({
+                        cursor: 'auto'
+                    })
                     .enableSelection()
                     .unbind( 'mousemove.dragtable' );
                     self._dropCol($dragDisplay);
@@ -453,7 +457,8 @@
 		},
 				
 		destroy: function() {
-			return this;
+			this.element.undelegate( 'thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown');
+            
 		}
 
         
