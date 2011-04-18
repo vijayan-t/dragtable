@@ -76,7 +76,7 @@
 			el = self.element;
 			
 			//grab the ths and the handles and bind them 
-			el.delegate('thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown', function(e){
+			el.delegate('thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown.' + self.widgetEventPrefix, function(e){
 				var $handle = $(this);
 				//make sure we are working with a th instead of a handle
 				if($handle.hasClass(o.handle.replace('.',''))){
@@ -89,7 +89,7 @@
 					'draggable':$dragDisplay
 				});
 				
-                //console.log( el, e );
+                //console.log( el, self );
                 
 				$dragDisplay
                 .focus()
@@ -108,7 +108,7 @@
                 $( document )
                 .disableSelection()
                 .css( 'cursor', 'move')
-                .bind('mousemove.dragtable', function( e ){
+                .bind('mousemove.' + self.widgetEventPrefix, function( e ){
                     $dragDisplay
                     .css({
     					position:'absolute',
@@ -149,7 +149,7 @@
                         cursor: 'auto'
                     })
                     .enableSelection()
-                    .unbind( 'mousemove.dragtable' );
+                    .unbind( 'mousemove.' + self.widgetEventPrefix );
                     self._dropCol($dragDisplay);
                     self.prevMouseX = 0;
                 });
@@ -457,7 +457,7 @@
 		},
 				
 		destroy: function() {
-			this.element.undelegate( 'thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown');
+			this.element.undelegate( 'thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown.' + self.widgetEventPrefix );
             
 		}
 
