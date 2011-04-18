@@ -313,26 +313,21 @@
 				if(collection.length == 0){
 					return;
 				}
-				switch(k){
-					case '0':
-						
-						var target = document.createElement('thead');
+                
+                if ( k == '0' ){
+                    var target = document.createElement('thead');
 						$dragDisplay[0].appendChild(target);
 						// 
 						// var target = $('<thead '+self._getElementAttributes($table.children('thead')[0])+'></thead>')
 						// .appendTo($dragDisplay);
-						
-						break;
-					case '2':
-						break;
-					default:
-						var target = document.createElement('tbody');
+                }else{ 
+                    var target = document.createElement('tbody');
 						$dragDisplay[0].appendChild(target);
 						// var target = $('<tbody '+self._getElementAttributes($table.children('tbody')[0])+'></tbody>')
 						// .appendTo($dragDisplay);
 	
-						break;
-				}
+
+                }
 
 				for(var i = 0,length = collection.length; i < length; i++){
 					
