@@ -342,10 +342,10 @@
 					//collection[i]=;
 				}
 			});
-		// console.log($dragDisplay);
-		//console.profileEnd('selectCol')
-		$dragDisplay  = $('<div class="dragtable-drag-wrapper"></div>').append($dragDisplay)
-		 return $dragDisplay;
+    		// console.log($dragDisplay);
+    		//console.profileEnd('selectCol')
+            $dragDisplay  = $('<div class="dragtable-drag-wrapper"></div>').append($dragDisplay)
+    		return $dragDisplay;
 		},
 		
 		
