@@ -15,8 +15,6 @@
  * 
  *
  * 
- * depends on ui draggable
- * 
  * 
  * quick down and and dirty on how this works
  * ###########################################
@@ -78,19 +76,21 @@
 			el = self.element;
 			
 			//grab the ths and the handles and bind them 
-			el.delegate('thead th:not( :has(' + o.handle + ')), ' + o.handle,'mousedown',function(e){
+			el.delegate('thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown', function(e){
 				var $handle = $(this);
 				//make sure we are working with a th instead of a handle
 				if($handle.hasClass(o.handle.replace('.',''))){
 					$handle = $handle.closest('th');
 				}
 				
-				var $dragDisplay = self.getCol($handle.index());
+				var $dragDisplay = self.getCol2( $handle.index() );
 				//console.log(dragDisplay)
 				self._eventHelper('displayHelper',{},{
 					'draggable':$dragDisplay
 				});
 				
+                //console.log( $dragDisplay, e );
+                
 				$dragDisplay
 				.focus()
 				.appendTo(document.body)
@@ -98,33 +98,28 @@
 					return false;
 				})
 				.css({
-					position:'absolute'
+					position:'absolute',
+                    top: e.pageY,
+                    left: e.pageX
 				})
-				.position({
-					of:this,
-					my:'center bottom',
-					at:'center bottom'
-					
-				})
-				.draggable({
-					handle:'thead th:not( :has(' + o.handle + ')), ' + o.handle,
-					//handle: 'th',
-					axis: 'x',
-					containment: self.element,
-					start: function(e,ui){
-						self.prevMouseX = e.pageX;
-						//TODO: trigger widget option here
-						
-					},
-					drag: function(e, ui){
-						//console.log(e);
-
-						var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
-						half = self.currentColumnCollection[0].clientWidth / 2;
-						//move left
-						if(e.pageX < self.prevMouseX){
+                //drag the column around
+       
+                self.prevMouseX = e.pageX;
+                
+                $( document )
+                .bind('mousemove.dragtable', function( e ){
+                    $dragDisplay
+                    .css({
+    					position:'absolute',
+                        top: e.pageY,
+                        left: e.pageX
+				    })
+                	
+                    var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
+					half = self.currentColumnCollection[0].clientWidth / 2;
+                    if(e.pageX < self.prevMouseX){
 							var threshold = columnPos.x - half;
-							if(ui.position.left < threshold){
+							if(e.pageX < threshold){
 								//console.info('move left');
 								self._swapCol(self.startIndex-1);
 								self._eventHelper('change',e);
@@ -133,7 +128,7 @@
 
 						}else{
 							var threshold = columnPos.x + half;
-							if(ui.position.left > threshold){
+							if(e.pageX > threshold){
 								//console.info('move right');
 								self._swapCol(self.startIndex+1);
 								self._eventHelper('change',e);
@@ -143,15 +138,16 @@
 						//update mouse position
 						self.prevMouseX = e.pageX;
 						
-				
-					},
-					stop: function(e, ui){
-						
-						self._dropCol($dragDisplay);
-						self.prevMouseX = 0;
-					}
-				});
-
+                    
+                    
+                    
+                })
+                .one( 'mouseup.dragtable',function(){
+                    $(document).unbind('mousemove.dragtable');
+                    self._dropCol($dragDisplay);
+                    self.prevMouseX = 0;
+                });
+                                
 				
 				//############
 			});
@@ -303,7 +299,7 @@
 
 		 	var cells = self._getCells($table[0], index);
 			self.currentColumnCollection = cells.array;
-			//console.log(cells);
+			console.log(cells);
 			//################################
 			
 			//TODO: convert to for in // its faster than each
@@ -348,6 +344,71 @@
     		return $dragDisplay;
 		},
 		
+		getCol2: function(index){
+			//console.log('index of col '+index);
+			//drag display is just simple html
+			//console.profile('selectCol');
+			
+			//colHeader.addClass('ui-state-disabled')
+
+			var $table = this.element,
+			self = this,
+			eIndex = self.options.tableElemIndex,
+			//BUG: IE thinks that this table is disabled, dont know how that happend
+			$dragDisplay = $('<table '+self._getElementAttributes($table[0])+'></table>')
+			.addClass('dragtable-drag-col');
+			
+			//start and end are the same to start out with
+			self.startIndex = self.endIndex = index;
+		
+
+		 	var cells = self._getCells($table[0], index);
+			self.currentColumnCollection = cells.array;
+			console.log(cells);
+			//################################
+			
+
+			$.each(cells.semantic,function(k,collection){
+				//dont bother processing if there is nothing here
+				
+				if(collection.length == 0){
+					return;
+				}
+                
+                if ( k == '0' ){
+                    var target = document.createElement('thead');
+						$dragDisplay[0].appendChild(target);
+						// 
+						// var target = $('<thead '+self._getElementAttributes($table.children('thead')[0])+'></thead>')
+						// .appendTo($dragDisplay);
+                }else{ 
+                    var target = document.createElement('tbody');
+						$dragDisplay[0].appendChild(target);
+						// var target = $('<tbody '+self._getElementAttributes($table.children('tbody')[0])+'></tbody>')
+						// .appendTo($dragDisplay);
+	
+
+                }
+
+				for(var i = 0,length = collection.length; i < length; i++){
+					//.cloneNode(true);
+					var clone = collection[i].cloneNode(true);
+                    console.log( clone)
+					collection[i].className+=' dragtable-col-placeholder';
+					var tr = document.createElement('tr');
+					tr.appendChild(clone);
+					//console.log(tr);
+					
+					
+					target.appendChild(tr);
+					//collection[i]=;
+				}
+			});
+    		// console.log($dragDisplay);
+    		//console.profileEnd('selectCol')
+            $dragDisplay  = $('<div class="dragtable-drag-wrapper"></div>').append($dragDisplay)
+    		return $dragDisplay;
+		},
 		
 		
 		/*
