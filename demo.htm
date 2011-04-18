@@ -64,10 +64,10 @@ $(document).ready(function(){
 	$('table').dragtable({
 		change:function(e,ui){
 			console.info('widget option change callback triggered');
-			console.log(ui);
+			console.log('CALLBACK DATA ',ui);
 		},
 		displayHelper: function(e,ui){
-			console.log(ui);
+			console.log('display helpers ',ui);
 			ui.draggable.append('<span>I was added<br>in the callback</span>')
 		}
 	});
