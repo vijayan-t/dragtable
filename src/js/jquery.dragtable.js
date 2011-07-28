@@ -15,8 +15,6 @@
  * 
  *
  * 
- * depends on ui draggable
- * 
  * 
  * quick down and and dirty on how this works
  * ###########################################
@@ -78,53 +76,51 @@
 			el = self.element;
 			
 			//grab the ths and the handles and bind them 
-			el.delegate('thead th:not( :has(' + o.handle + ')), ' + o.handle,'mousedown',function(e){
+			el.delegate('thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown.' + self.widgetEventPrefix, function(e){
 				var $handle = $(this);
 				//make sure we are working with a th instead of a handle
 				if($handle.hasClass(o.handle.replace('.',''))){
 					$handle = $handle.closest('th');
 				}
 				
-				var $dragDisplay = self.getCol($handle.index());
+				var $dragDisplay = self.getCol( $handle.index() );
 				//console.log(dragDisplay)
 				self._eventHelper('displayHelper',{},{
 					'draggable':$dragDisplay
 				});
 				
+                //console.log( el, self );
+                
 				$dragDisplay
-				.focus()
-				.appendTo(document.body)
-				.select(function(){
-					return false;
-				})
+                .focus()
+				.disableSelection()
 				.css({
-					position:'absolute'
+					position:'absolute',
+                    top: el[0].offsetTop,
+                    left: e.pageX
 				})
-				.position({
-					of:this,
-					my:'center bottom',
-					at:'center bottom'
-					
-				})
-				.draggable({
-					handle:'thead th:not( :has(' + o.handle + ')), ' + o.handle,
-					//handle: 'th',
-					axis: 'x',
-					containment: self.element,
-					start: function(e,ui){
-						self.prevMouseX = e.pageX;
-						//TODO: trigger widget option here
-						
-					},
-					drag: function(e, ui){
-						//console.log(e);
-
-						var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
-						half = self.currentColumnCollection[0].clientWidth / 2;
-						//move left
-						if(e.pageX < self.prevMouseX){
+                .appendTo(document.body)
+				
+                //drag the column around
+       
+                self.prevMouseX = e.pageX;
+                
+                $( document )
+                .disableSelection()
+                .css( 'cursor', 'move')
+                .bind('mousemove.' + self.widgetEventPrefix, function( e ){
+                    $dragDisplay
+                    .css({
+    					position:'absolute',
+                        left: e.pageX,
+                        zindex: 100
+				    })
+                	
+                    var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
+					half = self.currentColumnCollection[0].clientWidth / 2;
+                    if(e.pageX < self.prevMouseX){
 							var threshold = columnPos.x - half;
-							if(ui.position.left < threshold){
+							if(e.pageX < threshold){
 								//console.info('move left');
 								self._swapCol(self.startIndex-1);
 								self._eventHelper('change',e);
@@ -133,7 +129,7 @@
 
 						}else{
 							var threshold = columnPos.x + half;
-							if(ui.position.left > threshold){
+							if(e.pageX > threshold){
 								//console.info('move right');
 								self._swapCol(self.startIndex+1);
 								self._eventHelper('change',e);
@@ -143,15 +139,21 @@
 						//update mouse position
 						self.prevMouseX = e.pageX;
 						
-				
-					},
-					stop: function(e, ui){
-						
-						self._dropCol($dragDisplay);
-						self.prevMouseX = 0;
-					}
-				});
-
+                    
+                    
+                    
+                })
+                .one( 'mouseup.dragtable',function(){
+                    $( document )
+                    .css({
+                        cursor: 'auto'
+                    })
+                    .enableSelection()
+                    .unbind( 'mousemove.' + self.widgetEventPrefix );
+                    self._dropCol($dragDisplay);
+                    self.prevMouseX = 0;
+                });
+                                
 				
 				//############
 			});
@@ -313,26 +315,21 @@
 				if(collection.length == 0){
 					return;
 				}
-				switch(k){
-					case '0':
-						
-						var target = document.createElement('thead');
+                
+                if ( k == '0' ){
+                    var target = document.createElement('thead');
 						$dragDisplay[0].appendChild(target);
 						// 
 						// var target = $('<thead '+self._getElementAttributes($table.children('thead')[0])+'></thead>')
 						// .appendTo($dragDisplay);
-						
-						break;
-					case '2':
-						break;
-					default:
-						var target = document.createElement('tbody');
+                }else{ 
+                    var target = document.createElement('tbody');
 						$dragDisplay[0].appendChild(target);
 						// var target = $('<tbody '+self._getElementAttributes($table.children('tbody')[0])+'></tbody>')
 						// .appendTo($dragDisplay);
 	
-						break;
-				}
+
+                }
 
 				for(var i = 0,length = collection.length; i < length; i++){
 					
@@ -347,12 +344,11 @@
 					//collection[i]=;
 				}
 			});
-		// console.log($dragDisplay);
-		//console.profileEnd('selectCol')
-		$dragDisplay  = $('<div class="dragtable-drag-wrapper"></div>').append($dragDisplay)
-		 return $dragDisplay;
+    		// console.log($dragDisplay);
+    		//console.profileEnd('selectCol')
+            $dragDisplay  = $('<div class="dragtable-drag-wrapper"></div>').append($dragDisplay)
+    		return $dragDisplay;
 		},
-		
 		
 		
 		/*
@@ -461,7 +457,10 @@
 		},
 				
 		destroy: function() {
-			return this;
+			var self = this,
+			o = self.options;
+			this.element.undelegate( 'thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown.' + self.widgetEventPrefix );
+            
 		}
 
         
