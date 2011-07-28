@@ -95,11 +95,19 @@
                 .focus()
 				.disableSelection()
 				.css({
-					position:'absolute',
                     top: el[0].offsetTop,
                     left: e.pageX
 				})
-                .appendTo(document.body)
+                .insertAfter( self.element )
+				
+				//get the colum count
+				var colCount = self.element[ 0 ]
+				.getElementsByTagName( 'thead' )[ 0 ]
+				.getElementsByTagName( 'tr' )[ 0 ]
+				.getElementsByTagName( 'th' )
+				.length - 1;
+				
+				//console.log( 'col count', colCount );
 				
                 //drag the column around
        
@@ -110,11 +118,7 @@
                 .css( 'cursor', 'move')
                 .bind('mousemove.' + self.widgetEventPrefix, function( e ){
                     $dragDisplay
-                    .css({
-    					position:'absolute',
-                        left: e.pageX,
-                        zindex: 100
-				    })
+                    .css( 'left', e.pageX )
                 	
                     var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
 					half = self.currentColumnCollection[0].clientWidth / 2;
@@ -129,7 +133,8 @@
 
 						}else{
 							var threshold = columnPos.x + half;
-							if(e.pageX > threshold){
+							//move to the right only if x is greater than threshold and the current col isn' the last one
+							if(e.pageX > threshold && colCount != self.startIndex ){
 								//console.info('move right');
 								self._swapCol(self.startIndex+1);
 								self._eventHelper('change',e);
