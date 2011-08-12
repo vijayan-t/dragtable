@@ -33,6 +33,8 @@ table tbody tr:nth-of-type(2n+1) td{
 
 .dragtable-drag-handle{
 	height:.5em;
+	width: 5px;
+	float: right;
 	background:green;
 }
 
@@ -64,7 +66,7 @@ $(document).ready(function(){
 	$('table').dragtable({
 		change:function(e,ui){
 			console.info('widget option change callback triggered');
-			console.log('CALLBACK DATA ',ui);
+			//console.log('CALLBACK DATA ',ui);
 		},
 		displayHelper: function(e,ui){
 			console.log('display helpers ',ui);
@@ -90,7 +92,7 @@ $(document).ready(function(){
 				<th data-header="id"><div class="dragtable-drag-handle"></div> ID</th>
 				<th data-header="first_name">first name</th>
 				<th data-header="last_name">last name</th>
-				<th data-header="phone_number">phone number</th>
+				<th data-header="phone_number">phone number <div class="dragtable-drag-handle"></div></th>
 				<th data-header="color">team color</th>
 				<th data-header="salary">salary made</th>
 			</tr>

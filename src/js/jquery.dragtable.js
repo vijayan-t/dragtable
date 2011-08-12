@@ -89,14 +89,18 @@
 					'draggable':$dragDisplay
 				});
 				
+				var half = self.currentColumnCollection[0].clientWidth / 2;
+				//console.log( e, half, e.pageX)
+				
                 //console.log( el, self );
                 
 				$dragDisplay
+				.attr( 'tabindex', -1 )
                 .focus()
 				.disableSelection()
 				.css({
                     top: el[0].offsetTop,
-                    left: e.pageX
+                    left: (e.pageX + (parseInt('-' + half)))
 				})
                 .insertAfter( self.element )
 				
@@ -117,11 +121,14 @@
                 .disableSelection()
                 .css( 'cursor', 'move')
                 .bind('mousemove.' + self.widgetEventPrefix, function( e ){
-                    $dragDisplay
-                    .css( 'left', e.pageX )
+                    
                 	
                     var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
 					half = self.currentColumnCollection[0].clientWidth / 2;
+                    
+                    $dragDisplay
+                    .css( 'left', e.pageX + (parseInt('-' + half)) )
+                    
                     if(e.pageX < self.prevMouseX){
 							var threshold = columnPos.x - half;
 							if(e.pageX < threshold){
