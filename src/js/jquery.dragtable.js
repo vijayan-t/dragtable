@@ -84,23 +84,23 @@
 				}
 				
 				var $dragDisplay = self.getCol( $handle.index() );
-				//console.log(dragDisplay)
-				self._eventHelper('displayHelper',{},{
-					'draggable':$dragDisplay
-				});
+			
 				
-				var half = self.currentColumnCollection[0].clientWidth / 2;
-				//console.log( e, half, e.pageX)
+				var half = self.currentColumnCollection[0].clientWidth / 2,
+				//console.log( e.pageX, self._findElementPosition(el.parent()[0]))
+				
+				parentOffset = self._findElementPosition(el.parent()[0]);
 				
                 //console.log( el, self );
-                
+                //console.log( $dragDisplay)
 				$dragDisplay
 				.attr( 'tabindex', -1 )
                 .focus()
 				.disableSelection()
 				.css({
                     top: el[0].offsetTop,
-                    left: (e.pageX + (parseInt('-' + half)))
+                   //using the parentOff.set makes e.pageX reletive to the parent element. This fixes the issue of the drag display not showing up under cursor on drag.
+                    left: ((e.pageX - parentOffset.x) + (parseInt('-' + half)))
 				})
                 .insertAfter( self.element )
 				
@@ -117,6 +117,11 @@
        
                 self.prevMouseX = e.pageX;
                 
+                	//console.log(dragDisplay)
+				self._eventHelper('displayHelper', e ,{
+					'draggable': $dragDisplay
+				});
+                
                 $( document )
                 .disableSelection()
                 .css( 'cursor', 'move')
@@ -127,11 +132,11 @@
 					half = self.currentColumnCollection[0].clientWidth / 2;
                     
                     $dragDisplay
-                    .css( 'left', e.pageX + (parseInt('-' + half)) )
+                    .css( 'left', ((e.pageX - parentOffset.x) + (parseInt('-' + half))) )
                     
                     if(e.pageX < self.prevMouseX){
 							var threshold = columnPos.x - half;
-							if(e.pageX < threshold){
+							if(e.pageX  - parentOffset.x < threshold){
 								//console.info('move left');
 								self._swapCol(self.startIndex-1);
 								self._eventHelper('change',e);
@@ -141,7 +146,7 @@
 						}else{
 							var threshold = columnPos.x + half;
 							//move to the right only if x is greater than threshold and the current col isn' the last one
-							if(e.pageX > threshold && colCount != self.startIndex ){
+							if(e.pageX  - parentOffset.x > threshold && colCount != self.startIndex ){
 								//console.info('move right');
 								self._swapCol(self.startIndex+1);
 								self._eventHelper('change',e);
