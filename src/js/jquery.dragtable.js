@@ -31,32 +31,29 @@
  * clean up the api - event driven like ui autocompleate
  * make it easy to have a button swap colums
  * 
+ * 
+ * Events
+ * change - called after the col has been moved
+ * displayHelper - called before the col has started moving TODO: change to beforeChange
+ * 
  */
 
 (function($) {
   $.widget("jb.dragtable", {
   		//TODO: implement this
   		eventWidgetPrefix: 'dragtable',
-  		
+  		// when a col is dragged use this to find the symantic elements, for speed
+  		tableElemIndex:{  
+			head: '0',
+			body: '1',
+			foot: '2'
+		},
 		options: {
 			//used to the col headers, data containted in here is used to set / get the name of the col
 			dataHeader:'data-header',
 			//handle
-			handle:'.dragtable-drag-handle',
-			//optional call back used when the col order has changed
-			change: $.noop,
+			handle:'.dragtable-drag-handle'
 			
-			//called after we create the drag display allows user to customize the look of the col in drag
-			displayHelper: $.noop,
-			
-			
-			//TODO: Faze these out
-			// when a col is dragged use this to find the symantic elements, for speed
-			tableElemIndex:{  
-				head: '0',
-				body: '1',
-				foot: '2'
-			}
 		},
 				
 		_create: function() {
@@ -187,7 +184,7 @@
 		 * works dam fast
 		 */
 		_getCells: function( elem, index ){
-			var ei = this.options.tableElemIndex,
+			var ei = this.tableElemIndex,
 			
 			//TODO: clean up this format 
 			tds = {
@@ -310,11 +307,11 @@
 			//colHeader.addClass('ui-state-disabled')
 
 			var $table = this.element,
-			self = this,
-			eIndex = self.options.tableElemIndex,
-			//BUG: IE thinks that this table is disabled, dont know how that happend
-			$dragDisplay = $('<table '+self._getElementAttributes($table[0])+'></table>')
-			.addClass('dragtable-drag-col');
+				self = this,
+				eIndex = self.tableElemIndex,
+				//BUG: IE thinks that this table is disabled, dont know how that happend
+				$dragDisplay = $('<table '+self._getElementAttributes($table[0])+'></table>')
+									.addClass('dragtable-drag-col');
 			
 			//start and end are the same to start out with
 			self.startIndex = self.endIndex = index;
