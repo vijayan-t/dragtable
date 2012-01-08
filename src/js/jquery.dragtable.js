@@ -124,28 +124,30 @@
                     
                 	
                     var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
-						half = self.currentColumnCollection[0].clientWidth / 2;
+						colHalfWidth = self.currentColumnCollection[0].clientWidth / 2;
                     
                     $dragDisplay
-                    	.css( 'left', ((e.pageX - parentOffset.x) + (parseInt('-' + half))) )
+                    	.css( 'left', ((e.pageX - parentOffset.x) + (parseInt('-' + colHalfWidth))) )
                     
                     if(e.pageX < self.prevMouseX){
-							var threshold = columnPos.x - half;
+                    	//move left
+							var threshold = columnPos.x ;
+							console.log('move left ', columnPos.x, threshold );
 							if(e.pageX < threshold){
-								//console.info('move left');
+								
 								self._swapCol(self.startIndex-1);
 								self._eventHelper('change',e);
-								
 							}
 
 						}else{
-							var threshold = columnPos.x + half;
+							//move right
+							var threshold = columnPos.x + colHalfWidth * 2;
+							//console.log('move right ', columnPos.x, threshold, e.pageX );
 							//move to the right only if x is greater than threshold and the current col isn' the last one
 							if(e.pageX > threshold && colCount != self.startIndex ){
 								//console.info('move right');
-								self._swapCol(self.startIndex+1);
+								self._swapCol( self.startIndex + 1 );
 								self._eventHelper('change',e);
-								
 							}
 						}
 						//update mouse position
@@ -197,7 +199,6 @@
 			if(index <= -1 || typeof elem.rows[0].cells[index] == 'undefined'){
 				return tds;
 			}
-			console.profile();
 			for(var i = 0, length = elem.rows.length; i < length; i++){
 				var td = elem.rows[i].cells[index],
 					parentNodeName = td.parentNode.parentNode.nodeName;
