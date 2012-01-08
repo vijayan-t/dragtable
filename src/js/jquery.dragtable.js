@@ -69,8 +69,8 @@
 			this.prevMouseX = 0;
 			
 			var self = this,
-			o = self.options,
-			el = self.element;
+				o = self.options,
+				el = self.element;
 			
 			//grab the ths and the handles and bind them 
 			el.delegate('thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown.' + self.widgetEventPrefix, function(e){
@@ -91,22 +91,22 @@
                 //console.log( el, self );
                 //console.log( $dragDisplay)
 				$dragDisplay
-				.attr( 'tabindex', -1 )
-                .focus()
-				.disableSelection()
-				.css({
-                    top: el[0].offsetTop,
-                   //using the parentOff.set makes e.pageX reletive to the parent element. This fixes the issue of the drag display not showing up under cursor on drag.
-                    left: ((e.pageX - parentOffset.x) + (parseInt('-' + half)))
-				})
-                .insertAfter( self.element )
+					.attr( 'tabindex', -1 )
+	                .focus()
+					.disableSelection()
+					.css({
+	                    top: el[0].offsetTop,
+	                   //using the parentOff.set makes e.pageX reletive to the parent element. This fixes the issue of the drag display not showing up under cursor on drag.
+	                    left: ((e.pageX - parentOffset.x) + (parseInt('-' + half)))
+					})
+	                .insertAfter( self.element )
 				
 				//get the colum count
 				var colCount = self.element[ 0 ]
-				.getElementsByTagName( 'thead' )[ 0 ]
-				.getElementsByTagName( 'tr' )[ 0 ]
-				.getElementsByTagName( 'th' )
-				.length - 1;
+									.getElementsByTagName( 'thead' )[ 0 ]
+									.getElementsByTagName( 'tr' )[ 0 ]
+									.getElementsByTagName( 'th' )
+									.length - 1;
 				
 				//console.log( 'col count', colCount );
 				
@@ -120,16 +120,16 @@
 				});
                 
                 $( document )
-                .disableSelection()
-                .css( 'cursor', 'move')
-                .bind('mousemove.' + self.widgetEventPrefix, function( e ){
+	                .disableSelection()
+	                .css( 'cursor', 'move')
+	                .bind('mousemove.' + self.widgetEventPrefix, function( e ){
                     
                 	
                     var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
-					half = self.currentColumnCollection[0].clientWidth / 2;
+						half = self.currentColumnCollection[0].clientWidth / 2;
                     
                     $dragDisplay
-                    .css( 'left', ((e.pageX - parentOffset.x) + (parseInt('-' + half))) )
+                    	.css( 'left', ((e.pageX - parentOffset.x) + (parseInt('-' + half))) )
                     
                     if(e.pageX < self.prevMouseX){
 							var threshold = columnPos.x - half;
@@ -159,11 +159,12 @@
                 })
                 .one( 'mouseup.dragtable',function(){
                     $( document )
-                    .css({
-                        cursor: 'auto'
-                    })
-                    .enableSelection()
-                    .unbind( 'mousemove.' + self.widgetEventPrefix );
+	                    .css({
+	                        cursor: 'auto'
+	                    })
+	                    .enableSelection()
+	                    .unbind( 'mousemove.' + self.widgetEventPrefix );
+                    
                     self._dropCol($dragDisplay);
                     self.prevMouseX = 0;
                 });
@@ -186,15 +187,15 @@
 		_getCells: function( elem, index ){
 			var ei = this.tableElemIndex,
 			
-			//TODO: clean up this format 
-			tds = {
-				'semantic':{
-					'0': [],//head throws error if ei.head or ei['head']
-					'1': [],//body
-					'2': []//footer
-				},
-				'array':[]
-			};
+				//TODO: clean up this format 
+				tds = {
+					'semantic':{
+						'0': [],//head throws error if ei.head or ei['head']
+						'1': [],//body
+						'2': []//footer
+					},
+					'array':[]
+				};
 			
 			//console.log(index);
 			//check does this col exsist
@@ -206,7 +207,7 @@
 				var td = elem.rows[i].cells[index];
 
 				tds.array.push(td);
-				
+				//TODO: switch to if else -> speed
 				switch(td.parentNode.parentNode.nodeName){
 					case 'THEAD':
 					case 'thead':
@@ -221,7 +222,7 @@
 						break;
 				}
 		 		
-		 	}
+		 	}2
 		 	
 		 	return tds;
 		},
@@ -232,7 +233,7 @@
 		_getChildren: function(){
 			
 			var children = this.element[0].childNodes,
-			ret = [];
+				ret = [];
 			for(var i = 0, length = children.length; i < length; i++){
 				var e = children[i];
 				if(e.nodeType == 1){
@@ -242,18 +243,20 @@
 			
 			return ret;
 		},
-		
+		/*
+		 * returns all element attrs in a string key="value" key2="value"
+		 */
 		_getElementAttributes: function(element){
 			
         	var attrsString = '',
-	        attrs = element.attributes;
+	        	attrs = element.attributes;
 	        for(var i=0, length = attrs.length; i < length; i++) {
 	            attrsString += attrs[i].nodeName + '="' + attrs[i].nodeValue+'"';
 	        }
 	        return attrsString;
 		},
 		/*
-		 * currently not uses
+		 * currently not use - remove soon
 		 */
 		_swapNodes: function(a, b) {
         	var aparent = a.parentNode,
@@ -269,7 +272,7 @@
         	a.parentNode.insertBefore(b, a);
      	},
      	/*
-     	 * use this instead of jquerys offset, in the cases were using is faster than creating a jquery collection
+     	 * use this instead of jquery's offset, in the cases were using is faster than creating a jquery collection
      	 */
 		_findElementPosition: function( oElement ) {
 			if( typeof( oElement.offsetParent ) != 'undefined' ) {
@@ -375,7 +378,7 @@
 				return false;
 			}
 			
-			from = this.startIndex;
+			var from = this.startIndex;
 			this.endIndex = to;
 			
 	        if(from < to) {
@@ -423,10 +426,10 @@
 		 */
 		order: function(order){
 			var self = this,
-			elem = self.element,
-			options = self.options,
-			headers = elem.find('thead tr:first').children('th');
-			
+				elem = self.element,
+				options = self.options,
+				headers = elem.find('thead tr:first').children('th');
+				
 			
 			if(order == undefined){
 				//get
@@ -472,7 +475,8 @@
 				
 		destroy: function() {
 			var self = this,
-			o = self.options;
+				o = self.options;
+			
 			this.element.undelegate( 'thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown.' + self.widgetEventPrefix );
             
 		}
