@@ -84,9 +84,7 @@
 			
 				
 				var half = self.currentColumnCollection[0].clientWidth / 2,
-				//console.log( e.pageX, self._findElementPosition(el.parent()[0]))
-				
-				parentOffset = self._findElementPosition(el.parent()[0]);
+					parentOffset = self._findElementPosition(el.parent()[0]);
 				
                 //console.log( el, self );
                 //console.log( $dragDisplay)
@@ -152,10 +150,7 @@
 						}
 						//update mouse position
 						self.prevMouseX = e.pageX;
-						
-                    
-                    
-                    
+			
                 })
                 .one( 'mouseup.dragtable',function(){
                     $( document )
@@ -202,28 +197,28 @@
 			if(index <= -1 || typeof elem.rows[0].cells[index] == 'undefined'){
 				return tds;
 			}
-			
+			console.profile();
 			for(var i = 0, length = elem.rows.length; i < length; i++){
-				var td = elem.rows[i].cells[index];
+				var td = elem.rows[i].cells[index],
+					parentNodeName = td.parentNode.parentNode.nodeName;
 
 				tds.array.push(td);
-				//TODO: switch to if else -> speed
-				switch(td.parentNode.parentNode.nodeName){
-					case 'THEAD':
-					case 'thead':
-						tds.semantic[ei.head].push(td);
-						break;
-					case 'TFOOT':
-					case 'tfoot':
-						tds.semantic[ei.foot].push(td);
-						break;
-					default:
-						tds.semantic[ei.body].push(td);
-						break;
+				
+				if( /^tbody|TBODY/.test( parentNodeName ) ){
+					
+					tds.semantic[ei.body].push( td );
+					
+				}else if( /^thead|THEAD/.test( parentNodeName ) ){
+					
+					tds.semantic[ei.head].push( td );
+				
+				}else if( /^tfoot|TFOOT/.test( parentNodeName ) ){
+					
+					tds.semantic[ei.foot].push( td );
 				}
-		 		
-		 	}2
-		 	
+				
+					 		
+		 	}
 		 	return tds;
 		},
 		/*
