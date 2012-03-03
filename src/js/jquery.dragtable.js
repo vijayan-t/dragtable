@@ -36,6 +36,9 @@
  * change - called after the col has been moved
  * displayHelper - called before the col has started moving TODO: change to beforeChange
  * 
+ * IE notes
+ * 	ie8 in quirks mode will only drag once after that the events are lost
+ * 
  */
 
 (function($) {
@@ -74,20 +77,33 @@
 			
 			//grab the ths and the handles and bind them 
 			el.delegate('thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown.' + self.widgetEventPrefix, function(e){
-				var $handle = $(this);
+				var $handle = $(this),
+					//position the drag dispaly to rel to the middle of the target co
+					offsetLeft = this.offsetLeft;
+					
+				var $dragDisplay = self.getCol( $handle.index() );	
+				self._positionOffset = e.pageX - offsetLeft;	
+					
 				//make sure we are working with a th instead of a handle
 				if($handle.hasClass(o.handle.replace('.',''))){
+					
 					$handle = $handle.closest('th');
+					console.log( 'handle was clicked using th', $handle)
+					self._positionOffset = e.pageX + $handle[0].offsetLeft
 				}
 				
-				var $dragDisplay = self.getCol( $handle.index() );
-			
 				
+			
+				//console.log( $handle.width(), $handle[0] )
 				var half = self.currentColumnCollection[0].clientWidth / 2,
 					parentOffset = self._findElementPosition(el.parent()[0]);
+					
+					//figure out the width of the display and the top left of it
 				
-                //console.log( el, self );
-                //console.log( $dragDisplay)
+               	console.log( 'offsetLeft',offsetLeft, ' e.x',e.pageX );
+                
+                
+                
 				$dragDisplay
 					.attr( 'tabindex', -1 )
 	                .focus()
@@ -95,7 +111,8 @@
 					.css({
 	                    top: el[0].offsetTop,
 	                   //using the parentOff.set makes e.pageX reletive to the parent element. This fixes the issue of the drag display not showing up under cursor on drag.
-	                    left: ((e.pageX - parentOffset.x) + (parseInt('-' + half)))
+	                    //left: ((e.pageX - parentOffset.x) + (parseInt('-' + half)))
+	                    left: offsetLeft
 					})
 	                .insertAfter( self.element )
 				
@@ -109,8 +126,10 @@
 				//console.log( 'col count', colCount );
 				
                 //drag the column around
-       
-                self.prevMouseX = e.pageX;
+                //its jumpy if handle is used
+                //self.prevMouseX = e.pageX;
+                //TODO: make col switching relitvte to the silibing cols, not pageX
+                self.prevMouseX = offsetLeft;
                 
                 	//console.log(dragDisplay)
 				self._eventHelper('displayHelper', e ,{
@@ -124,16 +143,21 @@
                     
                 	
                     var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
-						colHalfWidth = self.currentColumnCollection[0].clientWidth / 2;
+						colHalfWidth = Math.floor( self.currentColumnCollection[0].clientWidth / 2 );
                     
+                    
+                    console.log( $dragDisplay.css('left'),'e.pageX ',e.pageX,'postion offset ', self._positionOffset, 'colpos.x ', columnPos.x)
+                    
+                    console.log( 'half width colHalfWidth ', colHalfWidth)
                     $dragDisplay
-                    	.css( 'left', ((e.pageX - parentOffset.x) + (parseInt('-' + colHalfWidth))) )
+                    	.css( 'left', ( e.pageX - self._positionOffset ) )
                     
                     if(e.pageX < self.prevMouseX){
                     	//move left
-							var threshold = columnPos.x ;
-							console.log('move left ', columnPos.x, threshold );
-							if(e.pageX < threshold){
+							var threshold = columnPos.x - colHalfWidth;
+							
+							//console.log( 'threshold ',threshold,  e.pageX - self._positionOffset )
+							if(e.pageX - self._positionOffset < threshold ){
 								
 								self._swapCol(self.startIndex-1);
 								self._eventHelper('change',e);
@@ -142,9 +166,9 @@
 						}else{
 							//move right
 							var threshold = columnPos.x + colHalfWidth * 2;
-							//console.log('move right ', columnPos.x, threshold, e.pageX );
+							console.log('move right ', columnPos.x, threshold, e.pageX );
 							//move to the right only if x is greater than threshold and the current col isn' the last one
-							if(e.pageX > threshold && colCount != self.startIndex ){
+							if(e.pageX > threshold  && colCount != self.startIndex ){
 								//console.info('move right');
 								self._swapCol( self.startIndex + 1 );
 								self._eventHelper('change',e);
