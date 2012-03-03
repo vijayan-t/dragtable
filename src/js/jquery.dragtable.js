@@ -80,19 +80,19 @@
 				var $handle = $(this),
 					//position the drag dispaly to rel to the middle of the target co
 					offsetLeft = this.offsetLeft;
-					
-				var $dragDisplay = self.getCol( $handle.index() );	
-				self._positionOffset = e.pageX - offsetLeft;	
-					
+
 				//make sure we are working with a th instead of a handle
 				if($handle.hasClass(o.handle.replace('.',''))){
 					
 					$handle = $handle.closest('th');
-					console.log( 'handle was clicked using th', $handle)
-					self._positionOffset = e.pageX + $handle[0].offsetLeft
+					offsetLeft = $handle[0].offsetLeft;
+					self._positionOffset = e.pageX + offsetLeft;
+
+					//console.log( 'handle was clicked using th', $handle, offsetLeft)
 				}
 				
-				
+				var $dragDisplay = self.getCol( $handle.index() );	
+				self._positionOffset = e.pageX - offsetLeft;
 			
 				//console.log( $handle.width(), $handle[0] )
 				var half = self.currentColumnCollection[0].clientWidth / 2,
@@ -100,9 +100,7 @@
 					
 					//figure out the width of the display and the top left of it
 				
-               	console.log( 'offsetLeft',offsetLeft, ' e.x',e.pageX );
-                
-                
+               	//console.log( 'offsetLeft',offsetLeft, ' e.x',e.pageX );
                 
 				$dragDisplay
 					.attr( 'tabindex', -1 )
@@ -146,9 +144,9 @@
 						colHalfWidth = Math.floor( self.currentColumnCollection[0].clientWidth / 2 );
                     
                     
-                    console.log( $dragDisplay.css('left'),'e.pageX ',e.pageX,'postion offset ', self._positionOffset, 'colpos.x ', columnPos.x)
+                    //console.log( $dragDisplay.css('left'),'e.pageX ',e.pageX,'postion offset ', self._positionOffset, 'colpos.x ', columnPos.x)
                     
-                    console.log( 'half width colHalfWidth ', colHalfWidth)
+                    //console.log( 'half width colHalfWidth ', colHalfWidth)
                     $dragDisplay
                     	.css( 'left', ( e.pageX - self._positionOffset ) )
                     
@@ -166,7 +164,7 @@
 						}else{
 							//move right
 							var threshold = columnPos.x + colHalfWidth * 2;
-							console.log('move right ', columnPos.x, threshold, e.pageX );
+							//console.log('move right ', columnPos.x, threshold, e.pageX );
 							//move to the right only if x is greater than threshold and the current col isn' the last one
 							if(e.pageX > threshold  && colCount != self.startIndex ){
 								//console.info('move right');
