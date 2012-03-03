@@ -45,12 +45,6 @@
   $.widget("jb.dragtable", {
   		//TODO: implement this
   		eventWidgetPrefix: 'dragtable',
-  		// when a col is dragged use this to find the symantic elements, for speed
-  		tableElemIndex:{  
-			head: '0',
-			body: '1',
-			foot: '2'
-		},
 		options: {
 			//used to the col headers, data containted in here is used to set / get the name of the col
 			dataHeader:'data-header',
@@ -58,7 +52,12 @@
 			handle:'.dragtable-drag-handle'
 			
 		},
-				
+		// when a col is dragged use this to find the symantic elements, for speed
+  		tableElemIndex:{  
+			head: '0',
+			body: '1',
+			foot: '2'
+		},		
 		_create: function() {
 			
 			//console.log(this);
