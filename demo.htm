@@ -13,7 +13,7 @@ table {
 /* add some styling to the table, padding etc*/
 table thead th{
 	padding:3px 10px;
-	border-bottom:1px soild #000000;
+	border-bottom:1px solid #000000;
 	background:#CCCCCC;
 }
 table tbody td{
@@ -40,9 +40,9 @@ table tbody tr:nth-of-type(2n+1) td{
 
 	</style>
 	
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/smoothness/jquery-ui.css" type="text/css" />
+	<script type="text/javascript" src="jquery-1.6.1.js"></script>
+    <script type="text/javascript" src="jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="jquery-ui.css" type="text/css" />
     
 
     <script type="text/javascript" src="src/js/jquery.dragtable.js"></script>
@@ -64,12 +64,13 @@ table tbody tr:nth-of-type(2n+1) td{
 <script type="text/javascript">
 $(document).ready(function(){
 	$('table').dragtable({
+		items: 'thead th:not( .notdraggable ):not( :has( .dragtable-drag-handle ) ), .dragtable-drag-handle',
 		change:function(e,ui){
-			console.info('widget option change callback triggered');
+			//console.info('widget option change callback triggered');
 			//console.log('CALLBACK DATA ',ui);
 		},
 		displayHelper: function(e,ui){
-			console.log('display helpers ',ui);
+			//console.log('display helpers ',ui);
 			ui.draggable.append('<span>I was added<br>in the callback</span>')
 		}
 	});
@@ -94,7 +95,7 @@ $(document).ready(function(){
 				<th data-header="last_name">last name</th>
 				<th data-header="phone_number">phone number <div class="dragtable-drag-handle"></div></th>
 				<th data-header="color">team color</th>
-				<th data-header="salary">salary made</th>
+				<th data-header="salary" class="notdraggable">salary made (not draggable)</th>
 			</tr>
 		</thead>
 		<tbody>

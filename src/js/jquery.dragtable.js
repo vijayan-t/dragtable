@@ -48,8 +48,10 @@
 		options: {
 			//used to the col headers, data containted in here is used to set / get the name of the col
 			dataHeader:'data-header',
-			//handle
-			handle:'.dragtable-drag-handle'
+			//class name that handles have 
+			handle:'dragtable-drag-handle',
+			//draggable items in cols, .dragtable-drag-handle has to match the handle options
+			items: 'thead th:not( :has( .dragtable-drag-handle ) ), .dragtable-drag-handle'
 			
 		},
 		// when a col is dragged use this to find the symantic elements, for speed
@@ -75,13 +77,13 @@
 				el = self.element;
 			
 			//grab the ths and the handles and bind them 
-			el.delegate('thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown.' + self.widgetEventPrefix, function(e){
+			el.delegate(o.items, 'mousedown.' + self.widgetEventPrefix, function(e){
 				var $handle = $(this),
 					//position the drag dispaly to rel to the middle of the target co
 					offsetLeft = this.offsetLeft;
 
 				//make sure we are working with a th instead of a handle
-				if($handle.hasClass(o.handle.replace('.',''))){
+				if( $handle.hasClass( o.handle ) ){
 					
 					$handle = $handle.closest('th');
 					offsetLeft = $handle[0].offsetLeft;
@@ -494,7 +496,7 @@
 			var self = this,
 				o = self.options;
 			
-			this.element.undelegate( 'thead th:not( :has(' + o.handle + ')), ' + o.handle, 'mousedown.' + self.widgetEventPrefix );
+			this.element.undelegate( o.items, 'mousedown.' + self.widgetEventPrefix );
             
 		}
 
