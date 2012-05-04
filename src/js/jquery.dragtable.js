@@ -21,20 +21,18 @@
  * so when a column is selected we grab all of the cells in that row and clone append them to a semi copy of the parent table and the 
  * "real" cells get a place holder class witch is removed when the dragstop event is triggered
  * 
- * TODO: 
- * add / create / edit css framework
- * add drag handles
- * click event to handle drag
- * ignore class
  * 
- * 
- * clean up the api - event driven like ui autocompleate
  * make it easy to have a button swap colums
  * 
  * 
- * Events
+ * Events - in order of trigger
+ * start - when the user mouses down on handle or th, use in favor of display helper
+ * displayHelper - called before the col has started moving - deprecated
  * change - called after the col has been moved
- * displayHelper - called before the col has started moving TODO: change to beforeChange
+ * stop - after the user mouses up and stops dragging
+ * 
+ * 
+ * 
  * 
  * IE notes
  * 	ie8 in quirks mode will only drag once after that the events are lost
@@ -51,7 +49,9 @@
 			//class name that handles have 
 			handle:'dragtable-drag-handle',
 			//draggable items in cols, .dragtable-drag-handle has to match the handle options
-			items: 'thead th:not( :has( .dragtable-drag-handle ) ), .dragtable-drag-handle'
+			items: 'thead th:not( :has( .dragtable-drag-handle ) ), .dragtable-drag-handle',
+			//if a col header as this class, cols cant be dragged past it
+			boundary: 'dragtable-drag-boundary'
 			
 		},
 		// when a col is dragged use this to find the symantic elements, for speed
@@ -125,13 +125,17 @@
 				//console.log( 'col count', colCount );
 				
                 //drag the column around
-                //its jumpy if handle is used
-                //self.prevMouseX = e.pageX;
+
                 //TODO: make col switching relitvte to the silibing cols, not pageX
                 self.prevMouseX = offsetLeft;
                 
                 	//console.log(dragDisplay)
+                //TODO: dep
 				self._eventHelper('displayHelper', e ,{
+					'draggable': $dragDisplay
+				});
+				
+				self._eventHelper('start',e,{
 					'draggable': $dragDisplay
 				});
                 
@@ -187,6 +191,8 @@
                     
                     self._dropCol($dragDisplay);
                     self.prevMouseX = 0;
+                    
+                    self._eventHelper('stop',e);
                 });
                                 
 				
@@ -399,6 +405,10 @@
 			
 			var from = this.startIndex;
 			this.endIndex = to;
+			//this col cant be moved past me
+			if( this.element.find('th').eq( to ).hasClass( this.options.boundary ) == true ){
+				return false;
+			}
 			
 	        if(from < to) {
 	        	//console.log('move right');
