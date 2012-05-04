@@ -229,8 +229,15 @@
 				return tds;
 			}
 			for(var i = 0, length = elem.rows.length; i < length; i++){
-				var td = elem.rows[i].cells[index],
-					parentNodeName = td.parentNode.parentNode.nodeName;
+				
+				var td = elem.rows[i].cells[index];
+				
+				//if the row has no cells dont error out;
+				if( td == undefined ){
+					continue;
+				}
+				
+				var parentNodeName = td.parentNode.parentNode.nodeName;
 
 				tds.array.push(td);
 				
