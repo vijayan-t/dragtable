@@ -41,8 +41,8 @@ table tbody tr:nth-of-type(2n+1) td{
 
 	</style>
 	
-	<script type="text/javascript" src="jquery-1.6.1.js"></script>
-    <script type="text/javascript" src="jquery-ui.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="jquery-ui.css" type="text/css" />
     
 
@@ -96,7 +96,7 @@ $(document).ready(function(){
 				<th data-header="last_name">last name</th>
 				<th data-header="phone_number">phone number <div class="dragtable-drag-handle"></div></th>
 				<th data-header="color">team color</th>
-				<th data-header="salary" class="notdraggable">salary made (not draggable)</th>
+				<th data-header="salary" class="notdraggable dragtable-drag-boundary">salary made (not draggable - cols cant be dragged past)</th>
 			</tr>
 		</thead>
 		<tbody>

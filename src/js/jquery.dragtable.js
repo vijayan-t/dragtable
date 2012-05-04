@@ -406,7 +406,13 @@
 			var from = this.startIndex;
 			this.endIndex = to;
 			//this col cant be moved past me
-			if( this.element.find('th').eq( to ).hasClass( this.options.boundary ) == true ){
+			var th = this.element.find('th').eq( to );
+			//check on th
+			if( th.hasClass( this.options.boundary ) == true ){
+				return false;
+			}
+			//check handle element
+			if( th.find( '.' + this.options.handle ).hasClass( this.options.boundary ) == true ){
 				return false;
 			}
 			
