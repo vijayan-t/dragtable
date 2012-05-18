@@ -368,15 +368,10 @@
                 if ( k == '0' ){
                     var target = document.createElement('thead');
 						$dragDisplay[0].appendChild(target);
-						// 
-						// var target = $('<thead '+self._getElementAttributes($table.children('thead')[0])+'></thead>')
-						// .appendTo($dragDisplay);
+
                 }else{ 
                     var target = document.createElement('tbody');
 						$dragDisplay[0].appendChild(target);
-						// var target = $('<tbody '+self._getElementAttributes($table.children('tbody')[0])+'></tbody>')
-						// .appendTo($dragDisplay);
-	
 
                 }
 
@@ -455,10 +450,11 @@
 				$dragDisplay.remove();
 			}
 			//remove placeholder class
+			//dont use jquery.fn.removeClass for performance reasons
 			for(var i = 0, length = self.currentColumnCollection.length; i < length; i++){
 				var td = self.currentColumnCollection[i];
 				
-				td.className = td.className.replace(' dragtable-col-placeholder','');
+				td.className = td.className.replace(/(?:^|\s)dragtable-col-placeholder(?!\S)/,'')
 			}
 			
 
