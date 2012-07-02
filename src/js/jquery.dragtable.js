@@ -59,7 +59,11 @@
 			head: '0',
 			body: '1',
 			foot: '2'
-		},		
+		},
+		tbodyRegex: /(tbody|TBODY)/,
+		theadRegex: /(thead|THEAD)/,
+		tfootRegex: /(tfoot|TFOOT)/,
+			
 		_create: function() {
 			
 			//console.log(this);
@@ -208,26 +212,37 @@
 		
 		/*
 		 * get the selected index cell out of table row
-		 * works dam fast
+		 * needs to work as fast as possible. and perforence gains in this method are worth the time
+		 * 	because its used to build the drag display and get the cells on col swap
+		 * http://jsperf.com/binary-regex-vs-string-equality/4
 		 */
 		_getCells: function( elem, index ){
+			//console.time('getcells');
 			var ei = this.tableElemIndex,
-			
 				//TODO: clean up this format 
 				tds = {
+					//store where the cells came from
 					'semantic':{
 						'0': [],//head throws error if ei.head or ei['head']
 						'1': [],//body
 						'2': []//footer
 					},
+					//keep a ref in a flat array for easy access
 					'array':[]
-				};
+				},
+				//cache regex, reduces looking up the chain
+				tbodyRegex = this.tbodyRegex,
+				theadRegex = this.theadRegex,
+				//reduce looking up the chain, dont do it for the foot think thats more overhead since not many tables have a tfoot
+				tdsSemanticBody = tds.semantic[ei.body],
+				tdsSemanticHead = tds.semantic[ei.head];
 			
 			//console.log(index);
 			//check does this col exsist
-			if(index <= -1 || typeof elem.rows[0].cells[index] == 'undefined'){
+			if(index <= -1 || typeof elem.rows[0].cells[index] == undefined){
 				return tds;
 			}
+			
 			for(var i = 0, length = elem.rows.length; i < length; i++){
 				
 				var td = elem.rows[i].cells[index];
@@ -238,29 +253,30 @@
 				}
 				
 				var parentNodeName = td.parentNode.parentNode.nodeName;
-
 				tds.array.push(td);
+				//faster to leave out ^ and $ in the regularexpression
+				if( tbodyRegex.test( parentNodeName ) ){
+					
+					tdsSemanticBody.push( td );
+					
+				}else if( theadRegex.test( parentNodeName ) ){
+					
+					tdsSemanticHead.push( td );
 				
-				if( /^tbody|TBODY/.test( parentNodeName ) ){
-					
-					tds.semantic[ei.body].push( td );
-					
-				}else if( /^thead|THEAD/.test( parentNodeName ) ){
-					
-					tds.semantic[ei.head].push( td );
-				
-				}else if( /^tfoot|TFOOT/.test( parentNodeName ) ){
+				}else if( this.tfootRegex.test( parentNodeName ) ){
 					
 					tds.semantic[ei.foot].push( td );
 				}
 				
 					 		
 		 	}
+		 	//console.timeEnd('getcells');
 		 	return tds;
 		},
 		/*
 		 * return and array of children excluding text nodes
 		 * used only on this.element
+		 * @deprecated
 		 */
 		_getChildren: function(){
 			
@@ -289,6 +305,7 @@
 		},
 		/*
 		 * currently not use - remove soon
+		 * @deprecated
 		 */
 		_swapNodes: function(a, b) {
         	var aparent = a.parentNode,
