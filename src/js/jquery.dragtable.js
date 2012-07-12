@@ -199,12 +199,16 @@
 
 			if( this._eventHelper('stop',e,{}) == true ){
 				 $( document )
-			 	 .unbind( 'mousemove.' + this.widgetEventPrefix )
-			 	 .enableSelection()
-			 	 .css( 'cursor', 'move')
+			 	 	.unbind( 'mousemove.' + this.widgetEventPrefix )
+			 	 	.enableSelection()
+			 	 	.css( 'cursor', 'move')
+				
+				this.currentColumnCollection = []
 				
 				this.dropCol();
-				this.dragDisplay.remove()
+				this.dragDisplay.remove();
+				
+				this.dragDisplay = $([]);
 			};  
 	                    
 		},
@@ -341,7 +345,8 @@
 					order: this.order(),
 					startIndex: this.startIndex,
 					endIndex: this.endIndex,
-					dragDisplay: this.dragDisplay				
+					dragDisplay: this.dragDisplay,
+					columnOffset: this.currentColumnCollectionOffset			
 				},additionalData)
 			);
 		},
