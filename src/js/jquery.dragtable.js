@@ -91,22 +91,21 @@
 					
 					$handle = $handle.closest('th');
 					offsetLeft = $handle[0].offsetLeft;
-					self._positionOffset = e.pageX + offsetLeft;
+					//dont this this is needed
+					//self._positionOffset = e.pageX + offsetLeft;
 
 					//console.log( 'handle was clicked using th', $handle, offsetLeft)
+					
+					
+					e.currentTarget = $handle.closest('th')[0]
 				}
 				
-				var $dragDisplay = self.getCol( $handle.index() );	
-				self._positionOffset = e.pageX - offsetLeft;
-			
-				//console.log( $handle.width(), $handle[0] )
-				var half = self.currentColumnCollection[0].clientWidth / 2,
-					parentOffset = self._findElementPosition(el.parent()[0]);
-					
-					//figure out the width of the display and the top left of it
 				
-               	//console.log( 'offsetLeft',offsetLeft, ' e.x',e.pageX );
-                
+				
+				
+				var $dragDisplay = self.getCol( $handle.index() );
+				
+				
 				$dragDisplay
 					.attr( 'tabindex', -1 )
 	                .focus()
@@ -119,21 +118,51 @@
 					})
 	                .insertAfter( self.element )
 				
-				//get the colum count
-				var colCount = self.element[ 0 ]
+				
+				
+				//#######################
+				// all stuff below is handling the mouse movement event, add ot seprate method?
+				// $drag display should be able to be passed as an argument
+				//#######################
+				
+				console.log('offsetLeft', offsetLeft, e)
+				
+				self.testHandler( e, $dragDisplay );
+				//############
+			});
+                
+		},
+		
+		/*
+		 * e.currentTarget is used for figuring out offsetLeft 
+		 */
+		testHandler: function( e, $dragDisplay ){
+							
+				
+				var offsetLeft = e.currentTarget.offsetLeft;
+				
+				var self = this;
+				var el = this.element;
+				var o = this.options;
+				
+				self._positionOffset = e.pageX - offsetLeft;
+				//TODO: make col switching relitvte to the silibing cols, not pageX
+                self.prevMouseX = offsetLeft;
+                
+				//figure out the width of the display and the top left of it
+				var half = self.currentColumnCollection[0].clientWidth / 2,
+					parentOffset = self._findElementPosition(el.parent()[0]),
+					
+					//get the colum count, used to contain col swap
+					colCount = self.element[ 0 ]
 									.getElementsByTagName( 'thead' )[ 0 ]
 									.getElementsByTagName( 'tr' )[ 0 ]
 									.getElementsByTagName( 'th' )
 									.length - 1;
-				
-				//console.log( 'col count', colCount );
+
 				
                 //drag the column around
 
-                //TODO: make col switching relitvte to the silibing cols, not pageX
-                self.prevMouseX = offsetLeft;
-                
-                	//console.log(dragDisplay)
                 //TODO: dep
 				self._eventHelper('displayHelper', e ,{
 					'draggable': $dragDisplay
@@ -144,8 +173,10 @@
 				});
                 
                 $( document )
+                	//move disableselection and cusor to default handlers of the start event
 	                .disableSelection()
 	                .css( 'cursor', 'move')
+	            
 	                .bind('mousemove.' + self.widgetEventPrefix, function( e ){
                     
                 	
@@ -198,13 +229,9 @@
                     
                     self._eventHelper('stop',e);
                 });
-                                
-				
-				//############
-			});
-                
+                          
 		},
-		
+
 		_setOption: function(option, value) {
 			$.Widget.prototype._setOption.apply( this, arguments );
            
