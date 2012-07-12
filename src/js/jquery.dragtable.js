@@ -542,6 +542,8 @@
 				o = self.options;
 			
 			this.element.undelegate( o.items, 'mousedown.' + self.widgetEventPrefix );
+			
+			$( document ).unbind('.' + self.widgetEventPrefix )
             
 		}
 
