@@ -365,7 +365,8 @@
 					column: this.currentColumnCollection,
 					order: this.order(),
 					startIndex: this.startIndex,
-					endIndex: this.endIndex					
+					endIndex: this.endIndex,
+					dragDisplay: this.dragDisplay				
 				},additionalData)
 			);
 		},
