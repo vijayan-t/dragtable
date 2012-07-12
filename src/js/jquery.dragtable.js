@@ -51,7 +51,9 @@
 			//draggable items in cols, .dragtable-drag-handle has to match the handle options
 			items: 'thead th:not( :has( .dragtable-drag-handle ) ), .dragtable-drag-handle',
 			//if a col header as this class, cols cant be dragged past it
-			boundary: 'dragtable-drag-boundary'
+			boundary: 'dragtable-drag-boundary',
+			//classnames that get applied to the real td, th
+			placeholder: ''
 			
 		},
 		// when a col is dragged use this to find the symantic elements, for speed
@@ -226,7 +228,9 @@
 			
 			this._dropCol();
 			
-			this._eventHelper('stop',e,{});  
+			if( this._eventHelper('stop',e,{}) == true ){
+				this.dragDisplay.remove()
+			};  
 	                    
 		},
 		
@@ -457,7 +461,7 @@
 				return false;
 			}
 			
-			if( this._eventHelper('breforechange',e) === false ){
+			if( this._eventHelper('breforechange',{}) === false ){
 				return false;
 			};
 			
@@ -480,7 +484,7 @@
 	          		}
 	        	}
 	        }
-	        this._eventHelper('change',e);
+	        this._eventHelper('change',{});
 	        
 	        this.startIndex = this.endIndex;
 		},
@@ -489,10 +493,10 @@
 		 */
 		_dropCol: function(){
 		//	console.profile('dropCol');
-			
-			if( this.dragDisplay ){
-				this.dragDisplay.remove()
-			}
+// 			
+			// if( this.dragDisplay ){
+				// this.dragDisplay.remove()
+			// }
 			
 			//remove placeholder class
 			//dont use jquery.fn.removeClass for performance reasons
