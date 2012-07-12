@@ -210,26 +210,34 @@
 		},
 		
 		start: function( e ){
+			
+			$( document )
+                	//move disableselection and cusor to default handlers of the start event
+	                .disableSelection()
+	                .css( 'cursor', 'move')
+			
 			 //TODO: dep
 				this._eventHelper('displayHelper', e ,{
 					//'draggable': $dragDisplay
 				});
 				
-				this._eventHelper('start',e,{
+			return this._eventHelper('start',e,{
 					//'draggable': $dragDisplay
 				});
                 
-                $( document )
-                	//move disableselection and cusor to default handlers of the start event
-	                .disableSelection()
-	                .css( 'cursor', 'move')
+                
 		},
 		stop: function( e ){
+			
+			
 			 $( document )
 	                    .css({
 	                        cursor: 'auto'
 	                    })
 	                    .enableSelection()
+			
+			this._eventHelper('stop',e,{});  
+	                    
 		},
 		
 		_setOption: function(option, value) {
@@ -365,7 +373,7 @@
 		 * used to tirgger optional events
 		 */
 		_eventHelper: function(eventName ,eventObj, additionalData){
-			this._trigger( 
+			return this._trigger( 
 				eventName, 
 				eventObj, 
 				$.extend({
