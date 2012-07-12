@@ -199,16 +199,12 @@
 
 			if( this._eventHelper('stop',e,{}) == true ){
 				 $( document )
-			 	 	.unbind( 'mousemove.' + this.widgetEventPrefix )
-			 	 	.enableSelection()
-			 	 	.css( 'cursor', 'move')
-				
-				this.currentColumnCollection = []
+			 	 .unbind( 'mousemove.' + this.widgetEventPrefix )
+			 	 .enableSelection()
+			 	 .css( 'cursor', 'move')
 				
 				this.dropCol();
-				this.dragDisplay.remove();
-				
-				this.dragDisplay = $([]);
+				this.dragDisplay.remove()
 			};  
 	                    
 		},
