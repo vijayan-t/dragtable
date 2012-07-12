@@ -82,6 +82,8 @@
 			
 			//grab the ths and the handles and bind them 
 			el.delegate(o.items, 'mousedown.' + self.widgetEventPrefix, function(e){
+				console.log( this, e )
+				
 				var $handle = $(this);
 
 				//make sure we are working with a th instead of a handle
@@ -123,7 +125,8 @@
 		},
 		
 		/*
-		 * e.currentTarget is used for figuring out offsetLeft 
+		 * e.currentTarget is used for figuring out offsetLeft
+		 * _getCol must be called before this is 
 		 */
 		testHandler: function( e, $dragDisplay ){
 							
@@ -152,20 +155,9 @@
 				
                 //drag the column around
 
-                //TODO: dep
-				self._eventHelper('displayHelper', e ,{
-					'draggable': $dragDisplay
-				});
-				
-				self._eventHelper('start',e,{
-					'draggable': $dragDisplay
-				});
-                
-                $( document )
-                	//move disableselection and cusor to default handlers of the start event
-	                .disableSelection()
-	                .css( 'cursor', 'move')
-	            
+               self.start( e )
+               
+	            $( document )
 	                .bind('mousemove.' + self.widgetEventPrefix, function( e ){
                     
                 	
@@ -205,14 +197,12 @@
 						self.prevMouseX = e.pageX;
 			
                 })
-                .one( 'mouseup.dragtable',function(){
+                .one( 'mouseup.' + self.widgetEventPrefix ,function(e ){
+                	self.stop( e )
                     $( document )
-	                    .css({
-	                        cursor: 'auto'
-	                    })
-	                    .enableSelection()
 	                    .unbind( 'mousemove.' + self.widgetEventPrefix );
                     
+                    //want the option for this not to get called
                     self._dropCol($dragDisplay);
                     self.prevMouseX = 0;
                     
@@ -220,7 +210,30 @@
                 });
                           
 		},
-
+		
+		start: function( e ){
+			 //TODO: dep
+				this._eventHelper('displayHelper', e ,{
+					//'draggable': $dragDisplay
+				});
+				
+				this._eventHelper('start',e,{
+					//'draggable': $dragDisplay
+				});
+                
+                $( document )
+                	//move disableselection and cusor to default handlers of the start event
+	                .disableSelection()
+	                .css( 'cursor', 'move')
+		},
+		stop: function( e ){
+			 $( document )
+	                    .css({
+	                        cursor: 'auto'
+	                    })
+	                    .enableSelection()
+		},
+		
 		_setOption: function(option, value) {
 			$.Widget.prototype._setOption.apply( this, arguments );
            
@@ -359,7 +372,9 @@
 				eventObj, 
 				$.extend({
 					column: this.currentColumnCollection,
-					order: this.order()						
+					order: this.order(),
+					startIndex: this.startIndex,
+					endIndex: this.endIndex					
 				},additionalData)
 			);
 		},
