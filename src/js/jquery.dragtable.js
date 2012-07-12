@@ -199,9 +199,6 @@
 
                     self._stop( e )
                     
-                    //want the option for this not to get called
-                    self._dropCol($dragDisplay);
-                    
                 });
                           
 		},
@@ -226,9 +223,11 @@
 			 	 .unbind( 'mousemove.' + this.widgetEventPrefix )
 			 	 .enableSelection()
 			 	 .css( 'cursor', 'move')
-	             
+			 	 
+	        this.prevMouseX = 0;     
+			 
 			
-			this.prevMouseX = 0;
+			this._dropCol();
 			
 			this._eventHelper('stop',e,{});  
 	                    
@@ -381,6 +380,9 @@
 		/*
 		 * build copy of table and attach the selected col to it, also removes the select col out of the table
 		 * @returns copy of table with the selected col
+		 * 
+		 * populates self.dragDisplay
+		 * 
 		 */		
 		getCol: function(index){
 			//console.log('index of col '+index);
@@ -391,9 +393,10 @@
 
 			var $table = this.element,
 				self = this,
-				eIndex = self.tableElemIndex,
+				eIndex = self.tableElemIndex;
+				
 				//BUG: IE thinks that this table is disabled, dont know how that happend
-				$dragDisplay = $('<table '+self._getElementAttributes($table[0])+'></table>')
+				self.dragDisplay = $('<table '+self._getElementAttributes($table[0])+'></table>')
 									.addClass('dragtable-drag-col');
 			
 			//start and end are the same to start out with
@@ -415,11 +418,11 @@
                 
                 if ( k == '0' ){
                     var target = document.createElement('thead');
-						$dragDisplay[0].appendChild(target);
+						self.dragDisplay[0].appendChild(target);
 
                 }else{ 
                     var target = document.createElement('tbody');
-						$dragDisplay[0].appendChild(target);
+						self.dragDisplay[0].appendChild(target);
 
                 }
 
@@ -438,8 +441,8 @@
 			});
     		// console.log($dragDisplay);
     		//console.profileEnd('selectCol')
-            $dragDisplay  = $('<div class="dragtable-drag-wrapper"></div>').append($dragDisplay)
-    		return $dragDisplay;
+            self.dragDisplay  = $('<div class="dragtable-drag-wrapper"></div>').append(self.dragDisplay)
+    		return self.dragDisplay;
 		},
 		
 		
@@ -490,17 +493,17 @@
 		/*
 		 * called when drag start is finished
 		 */
-		_dropCol: function($dragDisplay){
+		_dropCol: function(){
 		//	console.profile('dropCol');
-			var self = this;
 			
-			if($dragDisplay){
-				$dragDisplay.remove();
+			if( this.dragDisplay ){
+				this.dragDisplay.remove()
 			}
+			
 			//remove placeholder class
 			//dont use jquery.fn.removeClass for performance reasons
-			for(var i = 0, length = self.currentColumnCollection.length; i < length; i++){
-				var td = self.currentColumnCollection[i];
+			for(var i = 0, length = this.currentColumnCollection.length; i < length; i++){
+				var td = this.currentColumnCollection[i];
 				
 				td.className = td.className.replace(/(?:^|\s)dragtable-col-placeholder(?!\S)/,'')
 			}
