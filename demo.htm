@@ -72,7 +72,15 @@ $(document).ready(function(){
 		},
 		displayHelper: function(e,ui){
 			//console.log('display helpers ',ui);
-			ui.draggable.append('<span>I was added<br>in the callback</span>')
+			//ui.draggable.append('<span>I was added<br>in the callback</span>')
+		},
+		start: function(e,ui){
+			console.log('start', e, ui)
+		},
+		stop: function(e,ui){
+			console.log('stop', e, ui)
+			
+			//$(this).data('dragtable').getCol(ui.endIndex)
 		}
 	});
 	$('a.order').click(function(){
