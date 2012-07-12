@@ -87,7 +87,6 @@
 			
 			//grab the ths and the handles and bind them 
 			el.delegate(o.items, 'mousedown.' + self.widgetEventPrefix, function(e){
-				console.log( this, e )
 				
 				var $handle = $(this);
 
@@ -116,7 +115,7 @@
 				
 
 				
-				self._mousemoveHandler( e, $dragDisplay );
+				self._mousemoveHandler( e );
 				//############
 			});
                 
@@ -128,13 +127,16 @@
 		 * 
 		 * 
 		 */
-		_mousemoveHandler: function( e, $dragDisplay ){
+		_mousemoveHandler: function( e ){
 							
 				//position the drag dispaly to rel to the middle of the target co
 				var offsetLeft = e.currentTarget.offsetLeft;
 				
 				var self = this;
 				var el = this.element;
+				
+				
+				var $dragDisplay = self.dragDisplay;
 				
 				self._positionOffset = e.pageX - offsetLeft;
 				//TODO: make col switching relitvte to the silibing cols, not pageX
@@ -217,18 +219,16 @@
                 
 		},
 		_stop: function( e ){
-			
-			 $( document )
+			 	 
+	        this.prevMouseX = 0;     
+
+			if( this._eventHelper('stop',e,{}) == true ){
+				 $( document )
 			 	 .unbind( 'mousemove.' + this.widgetEventPrefix )
 			 	 .enableSelection()
 			 	 .css( 'cursor', 'move')
-			 	 
-	        this.prevMouseX = 0;     
-			 
-			
-			this._dropCol();
-			
-			if( this._eventHelper('stop',e,{}) == true ){
+				
+				this.dropCol();
 				this.dragDisplay.remove()
 			};  
 	                    
@@ -491,12 +491,7 @@
 		/*
 		 * called when drag start is finished
 		 */
-		_dropCol: function(){
-		//	console.profile('dropCol');
-// 			
-			// if( this.dragDisplay ){
-				// this.dragDisplay.remove()
-			// }
+		dropCol: function(){
 			
 			//remove placeholder class
 			//dont use jquery.fn.removeClass for performance reasons
