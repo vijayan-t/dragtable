@@ -222,14 +222,13 @@
 		},
 		_stop: function( e ){
 			
-			
 			 $( document )
-			 	 .unbind( 'mousemove.' + self.widgetEventPrefix )
+			 	 .unbind( 'mousemove.' + this.widgetEventPrefix )
 			 	 .enableSelection()
 			 	 .css( 'cursor', 'move')
 	             
 			
-			self.prevMouseX = 0;
+			this.prevMouseX = 0;
 			
 			this._eventHelper('stop',e,{});  
 	                    
