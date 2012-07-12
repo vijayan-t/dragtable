@@ -152,7 +152,7 @@
 				
                 //drag the column around
 
-               self.start( e )
+               self._start( e )
                
 	            $( document )
 	                .bind('mousemove.' + self.widgetEventPrefix, function( e ){
@@ -196,19 +196,17 @@
 			
                 })
                 .one( 'mouseup.' + self.widgetEventPrefix ,function(e ){
-                	self.stop( e )
-                    $( document )
-	                    .unbind( 'mousemove.' + self.widgetEventPrefix );
+
+                    self._stop( e )
                     
                     //want the option for this not to get called
                     self._dropCol($dragDisplay);
-                    self.prevMouseX = 0;
-      
+                    
                 });
                           
 		},
 		
-		start: function( e ){
+		_start: function( e ){
 			
 			$( document )
                 	//move disableselection and cusor to default handlers of the start event
@@ -226,14 +224,16 @@
                 
                 
 		},
-		stop: function( e ){
+		_stop: function( e ){
 			
 			
 			 $( document )
-	                    .css({
-	                        cursor: 'auto'
-	                    })
-	                    .enableSelection()
+			 	 .unbind( 'mousemove.' + self.widgetEventPrefix )
+			 	 .enableSelection()
+			 	 .css( 'cursor', 'move')
+	             
+			
+			self.prevMouseX = 0;
 			
 			this._eventHelper('stop',e,{});  
 	                    
