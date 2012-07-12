@@ -476,13 +476,13 @@
 		 * called when drag start is finished
 		 */
 		dropCol: function(){
-			
+			var regex = /(?:^|\s)dragtable-col-placeholder(?!\S)/;
 			//remove placeholder class
 			//dont use jquery.fn.removeClass for performance reasons
 			for(var i = 0, length = this.currentColumnCollection.length; i < length; i++){
 				var td = this.currentColumnCollection[i];
 				
-				td.className = td.className.replace(/(?:^|\s)dragtable-col-placeholder(?!\S)/,'')
+				td.className = td.className.replace(regex,'')
 			}
 			
 
