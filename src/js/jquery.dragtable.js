@@ -82,26 +82,15 @@
 			
 			//grab the ths and the handles and bind them 
 			el.delegate(o.items, 'mousedown.' + self.widgetEventPrefix, function(e){
-				var $handle = $(this),
-					//position the drag dispaly to rel to the middle of the target co
-					offsetLeft = this.offsetLeft;
+				var $handle = $(this);
 
 				//make sure we are working with a th instead of a handle
 				if( $handle.hasClass( o.handle ) ){
 					
 					$handle = $handle.closest('th');
-					offsetLeft = $handle[0].offsetLeft;
-					//dont this this is needed
-					//self._positionOffset = e.pageX + offsetLeft;
-
-					//console.log( 'handle was clicked using th', $handle, offsetLeft)
-					
-					
+					//change the target to the th, so the hander can pick up the offsetleft
 					e.currentTarget = $handle.closest('th')[0]
 				}
-				
-				
-				
 				
 				var $dragDisplay = self.getCol( $handle.index() );
 				
@@ -114,7 +103,7 @@
 	                    top: el[0].offsetTop,
 	                   //using the parentOff.set makes e.pageX reletive to the parent element. This fixes the issue of the drag display not showing up under cursor on drag.
 	                    //left: ((e.pageX - parentOffset.x) + (parseInt('-' + half)))
-	                    left: offsetLeft
+	                    left: e.currentTarget.offsetLeft
 					})
 	                .insertAfter( self.element )
 				
@@ -125,7 +114,7 @@
 				// $drag display should be able to be passed as an argument
 				//#######################
 				
-				console.log('offsetLeft', offsetLeft, e)
+				
 				
 				self.testHandler( e, $dragDisplay );
 				//############
@@ -138,7 +127,7 @@
 		 */
 		testHandler: function( e, $dragDisplay ){
 							
-				
+				//position the drag dispaly to rel to the middle of the target co
 				var offsetLeft = e.currentTarget.offsetLeft;
 				
 				var self = this;
