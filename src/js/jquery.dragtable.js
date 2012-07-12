@@ -27,7 +27,7 @@
  * 
  * Events - in order of trigger
  * start - when the user mouses down on handle or th, use in favor of display helper
- * displayHelper - called before the col has started moving - deprecated
+ * beforechagne - called when a col will be moved
  * change - called after the col has been moved
  * stop - after the user mouses up and stops dragging
  * 
@@ -176,8 +176,6 @@
 							if(e.pageX - self._positionOffset < threshold ){
 								
 								self._swapCol(self.startIndex-1);
-								//move this to _swap col
-								self._eventHelper('change',e);
 							}
 
 						}else{
@@ -188,7 +186,6 @@
 							if(e.pageX > threshold  && colCount != self.startIndex ){
 								//console.info('move right');
 								self._swapCol( self.startIndex + 1 );
-								self._eventHelper('change',e);
 							}
 						}
 						//update mouse position
@@ -460,6 +457,11 @@
 				return false;
 			}
 			
+			if( this._eventHelper('breforechange',e) === false ){
+				return false;
+			};
+			
+			
 	        if(from < to) {
 	        	//console.log('move right');
 	        	for(var i = from; i < to; i++) {
@@ -478,6 +480,7 @@
 	          		}
 	        	}
 	        }
+	        this._eventHelper('change',e);
 	        
 	        this.startIndex = this.endIndex;
 		},
@@ -548,7 +551,6 @@
 					 
 					 
 				}
-				self._eventHelper('change',{});
 				return self;
 			}
 		},
