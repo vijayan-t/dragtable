@@ -203,8 +203,7 @@
                     //want the option for this not to get called
                     self._dropCol($dragDisplay);
                     self.prevMouseX = 0;
-                    
-                    self._eventHelper('stop',e);
+      
                 });
                           
 		},
