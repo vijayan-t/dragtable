@@ -212,11 +212,7 @@
                 	//move disableselection and cusor to default handlers of the start event
 	                .disableSelection()
 	                .css( 'cursor', 'move')
-			
-			 //TODO: dep
-				this._eventHelper('displayHelper', e ,{
-					//'draggable': $dragDisplay
-				});
+
 				
 			return this._eventHelper('start',e,{
 					//'draggable': $dragDisplay
