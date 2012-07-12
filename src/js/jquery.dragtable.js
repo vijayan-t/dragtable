@@ -72,14 +72,13 @@
 			//used start/end of drag
 			this.startIndex = null;
 			this.endIndex = null;
-			this.currentColumnCollection = [];//the refferences to the table cells that are getting dragged
-			
-			//when get col is called
+			//the refferences to the table cells that are getting dragged
+			this.currentColumnCollection = [];
+			//the refferences the postion of the first element in the currentColunmCollection position
+			this.currentColumnCollectionOffset = {};
+			//the div wrapping the drag display table
 			this.dragDisplay = $([])
-			
-			//used on drag event to detect what direction the mouse is moving
-			//init on drag start
-			this.prevMouseX = 0;
+
 			
 			var self = this,
 				o = self.options,
@@ -98,18 +97,15 @@
 					e.currentTarget = $handle.closest('th')[0]
 				}
 				
-				var $dragDisplay = self.getCol( $handle.index() );
 				
-				
-				$dragDisplay
+			self.getCol( $handle.index() )
 					.attr( 'tabindex', -1 )
 	                .focus()
 					.disableSelection()
 					.css({
-	                    top: el[0].offsetTop,
+	                    top: self.currentColumnCollectionOffset.y,
 	                   //using the parentOff.set makes e.pageX reletive to the parent element. This fixes the issue of the drag display not showing up under cursor on drag.
-	                    //left: ((e.pageX - parentOffset.x) + (parseInt('-' + half)))
-	                    left: e.currentTarget.offsetLeft
+	                    left: self.currentColumnCollectionOffset.x
 					})
 	                .insertAfter( self.element )
 				
@@ -123,31 +119,24 @@
 		
 		/*
 		 * e.currentTarget is used for figuring out offsetLeft
-		 * _getCol must be called before this is 
+		 * getCol must be called before this is 
 		 * 
 		 * 
 		 */
 		_mousemoveHandler: function( e ){
 							
 				//position the drag dispaly to rel to the middle of the target co
-				var offsetLeft = e.currentTarget.offsetLeft;
-				
+			
 				var self = this;
-				var el = this.element;
 				
-				
-				var $dragDisplay = self.dragDisplay;
-				
-				self._positionOffset = e.pageX - offsetLeft;
+				//why is this getting stashed
+				self._positionOffset = e.pageX - this.currentColumnCollectionOffset.x;
 				//TODO: make col switching relitvte to the silibing cols, not pageX
-                self.prevMouseX = offsetLeft;
-                
-				//figure out the width of the display and the top left of it
-				var half = self.currentColumnCollection[0].clientWidth / 2,
-					parentOffset = self._findElementPosition(el.parent()[0]),
+                var prevMouseX = this.currentColumnCollectionOffset.x;
+
 					
 					//get the colum count, used to contain col swap
-					colCount = self.element[ 0 ]
+				var colCount = self.element[ 0 ]
 									.getElementsByTagName( 'thead' )[ 0 ]
 									.getElementsByTagName( 'tr' )[ 0 ]
 									.getElementsByTagName( 'th' )
@@ -161,22 +150,22 @@
 	            $( document )
 	                .bind('mousemove.' + self.widgetEventPrefix, function( e ){
                     
-                	
-                    var columnPos = self._findElementPosition(self.currentColumnCollection[0]),
+                	 var columnPos = self._setCurrentColumnCollectionOffset(),
 						colHalfWidth = Math.floor( self.currentColumnCollection[0].clientWidth / 2 );
+                   
                     
                     
-                    //console.log( $dragDisplay.css('left'),'e.pageX ',e.pageX,'postion offset ', self._positionOffset, 'colpos.x ', columnPos.x)
-                    
+                    console.log( columnPos, self._positionOffset, e.pageX)
+                                        
                     //console.log( 'half width colHalfWidth ', colHalfWidth)
-                    $dragDisplay
+                    self.dragDisplay
                     	.css( 'left', ( e.pageX - self._positionOffset ) )
                     
-                    if(e.pageX < self.prevMouseX){
+                    if(e.pageX < prevMouseX){
                     	//move left
 							var threshold = columnPos.x - colHalfWidth;
 							
-							//console.log( 'threshold ',threshold,  e.pageX - self._positionOffset )
+							console.log( 'threshold ',threshold,  e.pageX - self._positionOffset )
 							if(e.pageX - self._positionOffset < threshold ){
 								
 								self._swapCol(self.startIndex-1);
@@ -193,7 +182,7 @@
 							}
 						}
 						//update mouse position
-						self.prevMouseX = e.pageX;
+						prevMouseX = e.pageX;
 			
                 })
                 .one( 'mouseup.' + self.widgetEventPrefix ,function(e ){
@@ -219,8 +208,6 @@
                 
 		},
 		_stop: function( e ){
-			 	 
-	        this.prevMouseX = 0;     
 
 			if( this._eventHelper('stop',e,{}) == true ){
 				 $( document )
@@ -432,12 +419,19 @@
 					//collection[i]=;
 				}
 			});
-    		// console.log($dragDisplay);
-    		//console.profileEnd('selectCol')
+    		
+    		
+    		this._setCurrentColumnCollectionOffset();
+    		
+    		
             self.dragDisplay  = $('<div class="dragtable-drag-wrapper"></div>').append(self.dragDisplay)
     		return self.dragDisplay;
 		},
 		
+		
+		_setCurrentColumnCollectionOffset: function(){
+			return this.currentColumnCollectionOffset = this._findElementPosition( this.currentColumnCollection[0] );
+		},
 		
 		/*
 		 * move column left or right
