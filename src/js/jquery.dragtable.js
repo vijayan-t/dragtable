@@ -72,6 +72,9 @@
 			this.endIndex = null;
 			this.currentColumnCollection = [];//the refferences to the table cells that are getting dragged
 			
+			//when get col is called
+			this.dragDisplay = $([])
+			
 			//used on drag event to detect what direction the mouse is moving
 			//init on drag start
 			this.prevMouseX = 0;
@@ -109,16 +112,9 @@
 					})
 	                .insertAfter( self.element )
 				
+
 				
-				
-				//#######################
-				// all stuff below is handling the mouse movement event, add ot seprate method?
-				// $drag display should be able to be passed as an argument
-				//#######################
-				
-				
-				
-				self.testHandler( e, $dragDisplay );
+				self._mousemoveHandler( e, $dragDisplay );
 				//############
 			});
                 
@@ -127,15 +123,16 @@
 		/*
 		 * e.currentTarget is used for figuring out offsetLeft
 		 * _getCol must be called before this is 
+		 * 
+		 * 
 		 */
-		testHandler: function( e, $dragDisplay ){
+		_mousemoveHandler: function( e, $dragDisplay ){
 							
 				//position the drag dispaly to rel to the middle of the target co
 				var offsetLeft = e.currentTarget.offsetLeft;
 				
 				var self = this;
 				var el = this.element;
-				var o = this.options;
 				
 				self._positionOffset = e.pageX - offsetLeft;
 				//TODO: make col switching relitvte to the silibing cols, not pageX
@@ -179,6 +176,7 @@
 							if(e.pageX - self._positionOffset < threshold ){
 								
 								self._swapCol(self.startIndex-1);
+								//move this to _swap col
 								self._eventHelper('change',e);
 							}
 
