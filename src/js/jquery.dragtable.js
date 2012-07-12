@@ -130,7 +130,7 @@
 				var self = this;
 				
 				//why is this getting stashed
-				self._positionOffset = e.pageX - this.currentColumnCollectionOffset.x;
+				var startingOffsetX = e.pageX - this.currentColumnCollectionOffset.x;
 				//TODO: make col switching relitvte to the silibing cols, not pageX
                 var prevMouseX = this.currentColumnCollectionOffset.x;
 
@@ -155,19 +155,18 @@
                    
                     
                     
-                    console.log( columnPos, self._positionOffset, e.pageX)
+                    console.log( columnPos, startingOffsetX, e.pageX)
                                         
                     //console.log( 'half width colHalfWidth ', colHalfWidth)
                     self.dragDisplay
-                    	.css( 'left', ( e.pageX - self._positionOffset ) )
+                    	.css( 'left', ( e.pageX - startingOffsetX ) )
                     
-                    if(e.pageX < prevMouseX){
+                    if( e.pageX < prevMouseX ){
                     	//move left
-							var threshold = columnPos.x - colHalfWidth;
+							var threshold = columnPos.x;
 							
-							console.log( 'threshold ',threshold,  e.pageX - self._positionOffset )
-							if(e.pageX - self._positionOffset < threshold ){
-								
+							console.log( 'threshold ',threshold,  e.pageX - startingOffsetX )
+							if(e.pageX < threshold ){
 								self._swapCol(self.startIndex-1);
 							}
 
