@@ -331,16 +331,7 @@
 	        }
 	        return attrsString;
 		},
-		/*
-		 * currently not use - remove soon
-		 * @deprecated
-		 */
-		_swapNodes: function(a, b) {
-        	var aparent = a.parentNode,
-        	asibling = a.nextSibling === b ? a : a.nextSibling;
-        	b.parentNode.insertBefore(a, b);
-        	aparent.insertBefore(b, asibling);
-     	},
+
      	/*
      	 * faster than swap nodes
      	 * only works if a b parent are the same, works great for colums
