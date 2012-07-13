@@ -53,7 +53,7 @@
 			//if a col header as this class, cols cant be dragged past it
 			boundary: 'dragtable-drag-boundary',
 			//classnames that get applied to the real td, th
-			placeholder: ''
+			placeholder: 'dragtable-col-placeholder'
 			
 		},
 		// when a col is dragged use this to find the symantic elements, for speed
@@ -356,7 +356,8 @@
 
 			var $table = this.element,
 				self = this,
-				eIndex = self.tableElemIndex;
+				eIndex = self.tableElemIndex,
+				placholderClassnames = ' ' + this.options.placeholder;
 				
 				//BUG: IE thinks that this table is disabled, dont know how that happend
 				self.dragDisplay = $('<table '+self._getElementAttributes($table[0])+'></table>')
@@ -392,7 +393,7 @@
 				for(var i = 0,length = collection.length; i < length; i++){
 					
 					var clone = collection[i].cloneNode(true);
-					collection[i].className+=' dragtable-col-placeholder';
+					collection[i].className+=placholderClassnames;
 					var tr = document.createElement('tr');
 					tr.appendChild(clone);
 					//console.log(tr);
@@ -470,7 +471,8 @@
 		 * called when drag start is finished
 		 */
 		dropCol: function(){
-			var regex = /(?:^|\s)dragtable-col-placeholder(?!\S)/;
+			//TODO: cache this when the option is set
+			var regex = new RegExp("(?:^|\\s)" + this.options.placeholder + "(?!\\S)",'g');
 			//remove placeholder class
 			//dont use jquery.fn.removeClass for performance reasons
 			for(var i = 0, length = this.currentColumnCollection.length; i < length; i++){
