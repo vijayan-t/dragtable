@@ -103,11 +103,11 @@
 	                .focus()
 					.disableSelection()
 					.css({
-	                    top: self.currentColumnCollectionOffset.y,
+	                    top: self.currentColumnCollectionOffset.top,
 	                   //using the parentOff.set makes e.pageX reletive to the parent element. This fixes the issue of the drag display not showing up under cursor on drag.
-	                    left: self.currentColumnCollectionOffset.x
+	                    left: self.currentColumnCollectionOffset.left
 					})
-	                .insertAfter( self.element )
+	                .appendTo( document.body )
 				
 
 				
@@ -129,50 +129,52 @@
 			
 				var self = this,
 					//used to position the dragdisplay against
-					startingColumnOffsetX = e.pageX - this.currentColumnCollectionOffset.x,
+					startingColumnOffsetX = e.pageX - this.currentColumnCollectionOffset.left,
 				//TODO: make col switching relitvte to the silibing cols, not pageX
                 //start from event cords
-                	prevMouseX = this.currentColumnCollectionOffset.x,
+                	prevMouseX = this.currentColumnCollectionOffset.left,
 					//get the colum count, used to contain col swap
 					colCount = self.element[ 0 ]
 									.getElementsByTagName( 'thead' )[ 0 ]
 									.getElementsByTagName( 'tr' )[ 0 ]
 									.getElementsByTagName( 'th' )
-									.length - 1;
-
-                //drag the column around
-
+									.length - 1,
+					firstCell = self.currentColumnCollection[0];
+               
                self._start( e )
                
 	            $( document ).bind('mousemove.' + self.widgetEventPrefix, function( e ){
 	            	var columnPos = self._setCurrentColumnCollectionOffset(),
-	            		colHalfWidth = Math.floor( self.currentColumnCollection[0].clientWidth / 2 );
-                                        
+	            		colWidth = firstCell.clientWidth;
+                          
+                    
+                  //  console.log( e )      
+                                 
                     //console.log( 'half width colHalfWidth ', colHalfWidth)
                     self.dragDisplay
                     	.css( 'left', ( e.pageX - startingColumnOffsetX ) )
                     
-                    if( e.pageX < prevMouseX ){
+                    if( e.pageX  < prevMouseX ){
                     	//move left
-							var threshold = columnPos.x;
+							var threshold = columnPos.left;
 							
 						//	console.log( 'threshold ',threshold,  e.pageX - startingColumnOffsetX )
-							if(e.pageX < threshold ){
+							if( e.pageX  < threshold ){
 								self._swapCol(self.startIndex-1);
 							}
 
 						}else{
 							//move right
-							var threshold = columnPos.x + colHalfWidth * 2;
-							//console.log('move right ', columnPos.x, threshold, e.pageX );
+							var threshold = columnPos.left + colWidth ;
+							//console.log('move right ', columnPos.left,' ', threshold, ' ', e.pageX, ' ');
 							//move to the right only if x is greater than threshold and the current col isn' the last one
-							if(e.pageX > threshold  && colCount != self.startIndex ){
+							if( e.pageX  > threshold  && colCount != self.startIndex ){
 								//console.info('move right');
 								self._swapCol( self.startIndex + 1 );
 							}
 						}
 						//update mouse position
-						prevMouseX = e.pageX;
+						prevMouseX = e.pageX ;
 			
                 })
                 .one( 'mouseup.' + self.widgetEventPrefix ,function(e ){
@@ -319,15 +321,7 @@
      	 * use this instead of jquery's offset, in the cases were using is faster than creating a jquery collection
      	 */
 		_findElementPosition: function( oElement ) {
-			if( typeof( oElement.offsetParent ) != 'undefined' ) {
-				for( var posX = 0, posY = 0; oElement; oElement = oElement.offsetParent ) {
-					posX += oElement.offsetLeft;
-					posY += oElement.offsetTop;
-				}
-				return {'x':posX, 'y':posY };
-			} else {
-				return {'x':oElement.x, 'y':oElement.y };
-			}
+			return $(oElement).offset();
 		},
 		/*
 		 * used to tirgger optional events

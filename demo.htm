@@ -16,6 +16,7 @@ table thead th{
 	padding:3px 10px;
 	border-bottom:1px solid #000000;
 	background:#CCCCCC;
+	background-size: 50%;
 }
 table tbody td{
 	padding:3px 10px;
@@ -37,6 +38,12 @@ table tbody tr:nth-of-type(2n+1) td{
 	width: 5px;
 	float: right;
 	background:green;
+}
+
+.tablewrapper{
+	position: relative;
+	
+	margin: 3em;
 }
 
 	</style>
@@ -80,6 +87,17 @@ $(document).ready(function(){
 		stop: function(e,ui){
 			console.log('stop', e, ui)
 			
+			//$(this).dragtable('dropCol')
+			
+			 // $( document )
+			 	 // .unbind( 'mousemove.dragtable' )
+// 			
+			// ui.dragDisplay.animate({
+				// left: ui.columnOffset.x
+			// })
+// 			
+			// return false;
+			
 			//$(this).data('dragtable').getCol(ui.endIndex)
 		}
 	});
@@ -96,7 +114,9 @@ $(document).ready(function(){
 </script>
 <h1>20 cells</h1>
 <hr />
-	<table id="one">
+<div class="tablewrapper">
+	
+		<table id="one">
 		<thead class="test">
 			<tr>
 				<th data-header="id"  class="dragtable-drag-boundary"><div class="dragtable-drag-handle"></div> ID(ragtable-drag-boundary))</th>
@@ -150,6 +170,8 @@ $(document).ready(function(){
 			</tr>
 		</tbody>
 	</table>
+	
+</div>
 	<a class="order">get Col order</a> | <a class="setorder">set Col order</a>
 	
 	<h1>around 100 cells</h1>
