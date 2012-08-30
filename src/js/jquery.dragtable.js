@@ -53,7 +53,9 @@
 			//if a col header as this class, cols cant be dragged past it
 			boundary: 'dragtable-drag-boundary',
 			//classnames that get applied to the real td, th
-			placeholder: 'dragtable-col-placeholder'
+			placeholder: 'dragtable-col-placeholder',
+			//the drag display will be appended to this element, some reason this is blank, also if your body tag has been zeroed off it wont be excact
+			parent: $(  document.body )
 			
 		},
 		// when a col is dragged use this to find the symantic elements, for speed
@@ -83,11 +85,16 @@
 			var self = this,
 				o = self.options,
 				el = self.element;
-			
+		
+			//shred catch for this
+			if( o.parent.length == 0 ){
+				o.parent = $( document.body );
+			}
 			//grab the ths and the handles and bind them 
 			el.delegate(o.items, 'mousedown.' + self.widgetEventPrefix, function(e){
 				
-				var $handle = $(this);
+				var $handle = $(this),
+					parentOffset = o.parent.offset();
 
 				//make sure we are working with a th instead of a handle
 				if( $handle.hasClass( o.handle ) ){
@@ -97,17 +104,17 @@
 					e.currentTarget = $handle.closest('th')[0]
 				}
 				
-				
+							
 			self.getCol( $handle.index() )
 					.attr( 'tabindex', -1 )
 	                .focus()
 					.disableSelection()
 					.css({
-	                    top: self.currentColumnCollectionOffset.top,
+	                    top: self.currentColumnCollectionOffset.top - parentOffset.top,
 	                   //using the parentOff.set makes e.pageX reletive to the parent element. This fixes the issue of the drag display not showing up under cursor on drag.
-	                    left: self.currentColumnCollectionOffset.left
+	                    left: self.currentColumnCollectionOffset.left - parentOffset.left
 					})
-	                .appendTo( document.body )
+	                .appendTo( o.parent )
 				
 
 				
@@ -121,18 +128,19 @@
 		 * e.currentTarget is used for figuring out offsetLeft
 		 * getCol must be called before this is 
 		 * 
+		 * parent is either suppied via options or your doing some hacking =) but should be an jquery object
 		 * 
 		 */
-		_mousemoveHandler: function( e ){
+		_mousemoveHandler: function( e, parent ){
 							
 				//position the drag dispaly to rel to the middle of the target co
-			
 				var self = this,
+					parentOffsetLeft = this.options.parent.offset().left,
 					//used to position the dragdisplay against
 					startingColumnOffsetX = e.pageX - this.currentColumnCollectionOffset.left,
 				//TODO: make col switching relitvte to the silibing cols, not pageX
                 //start from event cords
-                	prevMouseX = this.currentColumnCollectionOffset.left,
+                	prevMouseX = this.currentColumnCollectionOffset.left - parentOffsetLeft,
 					//get the colum count, used to contain col swap
 					colCount = self.element[ 0 ]
 									.getElementsByTagName( 'thead' )[ 0 ]
@@ -146,15 +154,11 @@
 	            $( document ).bind('mousemove.' + self.widgetEventPrefix, function( e ){
 	            	var columnPos = self._setCurrentColumnCollectionOffset(),
 	            		colWidth = firstCell.clientWidth;
-                          
-                    
-                  //  console.log( e )      
-                                 
-                    //console.log( 'half width colHalfWidth ', colHalfWidth)
+
                     self.dragDisplay
-                    	.css( 'left', ( e.pageX - startingColumnOffsetX ) )
+                    	.css( 'left', e.pageX - parentOffsetLeft - startingColumnOffsetX  )
                     
-                    if( e.pageX  < prevMouseX ){
+                    if( ( e.pageX - parentOffsetLeft )  < prevMouseX ){
                     	//move left
 							var threshold = columnPos.left;
 							
@@ -174,7 +178,7 @@
 							}
 						}
 						//update mouse position
-						prevMouseX = e.pageX ;
+						prevMouseX = e.pageX - parentOffsetLeft;
 			
                 })
                 .one( 'mouseup.' + self.widgetEventPrefix ,function(e ){
