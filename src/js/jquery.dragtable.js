@@ -49,7 +49,7 @@
 			//class name that handles have 
 			handle:'dragtable-drag-handle',
 			//draggable items in cols, .dragtable-drag-handle has to match the handle options
-			items: 'thead th:not( :has( .dragtable-drag-handle ) ), .dragtable-drag-handle',
+			items: 'th:not( :has( .dragtable-drag-handle ) ), .dragtable-drag-handle',
 			//if a col header as this class, cols cant be dragged past it
 			boundary: 'dragtable-drag-boundary',
 			//classnames that get applied to the real td, th
@@ -74,9 +74,9 @@
 			//used start/end of drag
 			this.startIndex = null;
 			this.endIndex = null;
-			//the refferences to the table cells that are getting dragged
+			//the references to the table cells that are getting dragged
 			this.currentColumnCollection = [];
-			//the refferences the postion of the first element in the currentColunmCollection position
+			//the rreferences the pposition of the first element in the currentColunmCollection position
 			this.currentColumnCollectionOffset = {};
 			//the div wrapping the drag display table
 			this.dragDisplay = $([])
@@ -86,7 +86,7 @@
 				o = self.options,
 				el = self.element;
 		
-			//shred catch for this
+			//offsetparent catch for this
 			if( o.parent.length == 0 ){
 				o.parent = $( document.body );
 			}
@@ -141,7 +141,7 @@
 				//TODO: make col switching relitvte to the silibing cols, not pageX
                 //start from event cords
                 	prevMouseX = this.currentColumnCollectionOffset.left - parentOffsetLeft,
-					//get the colum count, used to contain col swap
+					//get the col count, used to contain col swap
 					colCount = self.element[ 0 ]
 									.getElementsByTagName( 'thead' )[ 0 ]
 									.getElementsByTagName( 'tr' )[ 0 ]
@@ -190,7 +190,7 @@
 		_start: function( e ){
 			
 			$( document )
-                	//move disableselection and cusor to default handlers of the start event
+                	//move disableselection and cursor to default handlers of the start event
 	                .disableSelection()
 	                .css( 'cursor', 'move')
 
@@ -222,7 +222,7 @@
 		
 		/*
 		 * get the selected index cell out of table row
-		 * needs to work as fast as possible. and perforence gains in this method are worth the time
+		 * needs to work as fast as possible. and performance gains in this method are worth the time
 		 * 	because its used to build the drag display and get the cells on col swap
 		 * http://jsperf.com/binary-regex-vs-string-equality/4
 		 */
@@ -426,7 +426,7 @@
 		 */
 		_swapCol: function( to ){
 			
-			//cant swap if same postion
+			//cant swap if same position
 			if(to == this.startIndex){
 				return false;
 			}
