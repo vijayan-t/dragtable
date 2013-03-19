@@ -36,7 +36,16 @@ test("dragtable test", function(){
 		
 		ok( S('#one th:first').next().attr('data-header') == 'phone_number', 'tried to drag past boundary, is next to it')
 	})
-	
+	/*
+	 * cant be dragged 
+	 * notdraggable
+	 */
+	var notdraggablePrevHeader = 'last_name';
+	S('#one th[data-header=salary]').drag('-500 +0', function(){
+		ok( S('#one th[data-header=salary]').prev().attr('data-header') == 'last_name', 'notdraggable cant be dragged')
+		
+		
+	})
 	
 	/*
 	 * parent offset scroll
