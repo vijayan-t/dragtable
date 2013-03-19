@@ -7,18 +7,41 @@ module("dragtable", {
 });
 
 test("dragtable test", function(){
-	S('#create').click()
+	/*
+	 * drag col change
+	 */
+	S('#one th[data-header=first_name]').drag('+100 +0', function(){
+		ok( S('#one th[data-header=last_name]').next().attr('data-header') == 'first_name', 'order changed')
+	})
+	//reverse
+	S('#one th[data-header=first_name]').drag('-150 +0', function(){
+		ok( S('#one th[data-header=first_name]').next().attr('data-header') == 'last_name', ' reverse order changed')
+	})
 	
-	// wait until grilled cheese has been added
-	S('h3:contains(Grilled Cheese X)').exists();
+	/*
+	 * check table boundary
+	 */
+	S('#one th[data-header=color]').drag('-500 +0', function(){
+		ok( S('#one th:first').attr('data-header') == 'id', 'cant be dragged past boundary')
+		
+		ok( S('#one th:first').next().attr('data-header') == 'color', 'tried to drag past boundary, is next to it')
+	})
 	
-	S.confirm(true);
-	S('h3:last a').click();
+	
+	/*
+	 * handle
+	 */
+	S('#one th[data-header=phone_number] .dragtable-drag-handle').drag('-500 +0', function(){
+		ok( S('#one th:first').attr('data-header') == 'id', 'cant be dragged past boundary')
+		
+		ok( S('#one th:first').next().attr('data-header') == 'phone_number', 'tried to drag past boundary, is next to it')
+	})
 	
 	
-	S('h3:contains(Grilled Cheese)').missing(function(){
-		ok(true,"Grilled Cheese Removed")
-	});
+	/*
+	 * parent offset scroll
+	 */
+	
 	
 });
 
