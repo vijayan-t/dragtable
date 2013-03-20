@@ -55,7 +55,7 @@
 			//classnames that get applied to the real td, th
 			placeholder: 'dragtable-col-placeholder',
 			//the drag display will be appended to this element, some reason this is blank, also if your body tag has been zeroed off it wont be excact
-			parent: $(  document.body )
+			appendTarget: $(  document.body )
 			
 		},
 		// when a col is dragged use this to find the symantic elements, for speed
@@ -86,9 +86,9 @@
 				o = self.options,
 				el = self.element;
 		
-			//offsetparent catch for this
-			if( o.parent.length == 0 ){
-				o.parent = $( document.body );
+			//offsetappendTarget catch for this
+			if( o.appendTarget.length == 0 ){
+				o.appendTarget = $( document.body );
 			}
 			//grab the ths and the handles and bind them 
 			el.delegate(o.items, 'mousedown.' + self.widgetEventPrefix, function(e){
@@ -114,7 +114,7 @@
 	                   //using the parentOff.set makes e.pageX reletive to the parent element. This fixes the issue of the drag display not showing up under cursor on drag.
 	                    left: self.currentColumnCollectionOffset.left - elementOffset.left
 					})
-	                .appendTo( o.parent )
+	                .appendTo( o.appendTarget )
 				
 
 				
@@ -128,14 +128,14 @@
 		 * e.currentTarget is used for figuring out offsetLeft
 		 * getCol must be called before this is 
 		 * 
-		 * parent is either suppied via options or your doing some hacking =) but should be an jquery object
+		 * appendTarget is either suppied via options or your doing some hacking =) but should be an jquery object
 		 * 
 		 */
-		_mousemoveHandler: function( e, parent ){
+		_mousemoveHandler: function( e, appendTarget ){
 							
 				//position the drag dispaly to rel to the middle of the target co
 				var self = this,
-					parentOffsetLeft = this.options.parent.offset().left,
+					parentOffsetLeft = this.options.appendTarget.offset().left,
 					//used to position the dragdisplay against
 					startingColumnOffsetX = e.pageX - this.currentColumnCollectionOffset.left,
 				//TODO: make col switching relitvte to the silibing cols, not pageX
@@ -163,11 +163,11 @@
                     
                                       	//TODO: clean this up
 
-                    if( left > self.options.parent[ 0 ].offsetWidth ){
+                    if( left > self.options.appendTarget[ 0 ].offsetWidth ){
                     //	console.log( 'hsa scroll', o.parent, e , left )
                     	//this works!, but we dont know how it will work with an element that has scrol: auto
                     	
-                    	var target = self.options.parent[0];
+                    	var target = self.options.appendTarget[0];
                     	                   	
                     	console.log( self.dragDisplay.offsetParent() )
                     	
