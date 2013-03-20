@@ -94,7 +94,7 @@
 			el.delegate(o.items, 'mousedown.' + self.widgetEventPrefix, function(e){
 				
 				var $handle = $(this),
-					parentOffset = o.parent.offset();
+					elementOffset = self.element.position()
 
 				//make sure we are working with a th instead of a handle
 				if( $handle.hasClass( o.handle ) ){
@@ -110,9 +110,9 @@
 	                .focus()
 					.disableSelection()
 					.css({
-	                    top: self.currentColumnCollectionOffset.top - parentOffset.top,
+	                    top: elementOffset.top,
 	                   //using the parentOff.set makes e.pageX reletive to the parent element. This fixes the issue of the drag display not showing up under cursor on drag.
-	                    left: self.currentColumnCollectionOffset.left - parentOffset.left
+	                    left: self.currentColumnCollectionOffset.left - elementOffset.left
 					})
 	                .appendTo( o.parent )
 				
@@ -153,10 +153,34 @@
                
 	            $( document ).bind('mousemove.' + self.widgetEventPrefix, function( e ){
 	            	var columnPos = self._setCurrentColumnCollectionOffset(),
-	            		colWidth = firstCell.clientWidth;
+	            		colWidth = firstCell.clientWidth,
+	            		left = e.pageX - parentOffsetLeft - startingColumnOffsetX ;
 
                     self.dragDisplay
-                    	.css( 'left', e.pageX - parentOffsetLeft - startingColumnOffsetX  )
+                    	.css( 'left', left )
+                    
+                    
+                    
+                                      	//TODO: clean this up
+
+                    if( left > self.options.parent[ 0 ].offsetWidth ){
+                    //	console.log( 'hsa scroll', o.parent, e , left )
+                    	//this works!, but we dont know how it will work with an element that has scrol: auto
+                    	
+                    	var target = self.options.parent[0];
+                    	                   	
+                    	console.log( self.dragDisplay.offsetParent() )
+                    	
+                    //	self.dragDisplay.offsetParent()[0].scrollLeft = left + self.dragDisplay.outerWidth()
+                    	if( target.tagName == 'BODY' ){
+                    		window.scroll( left + self.dragDisplay.outerWidth(), window.scrollY );
+                    	}else{
+                    		target.scrollLeft = left + self.dragDisplay.outerWidth();
+                    		
+                    	}
+                    	
+                    }
+                    
                     
                     if( ( e.pageX - parentOffsetLeft )  < prevMouseX ){
                     	//move left
@@ -325,7 +349,7 @@
      	 * use this instead of jquery's offset, in the cases were using is faster than creating a jquery collection
      	 */
 		_findElementPosition: function( oElement ) {
-			return $(oElement).offset();
+			return $(oElement).position();
 		},
 		/*
 		 * used to tirgger optional events
