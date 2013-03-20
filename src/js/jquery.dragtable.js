@@ -94,7 +94,7 @@
 			el.delegate(o.items, 'mousedown.' + self.widgetEventPrefix, function(e){
 				
 				var $handle = $(this),
-					elementOffset = self.element.position()
+					elementOffsetTop = self.element.position().top;
 
 				//make sure we are working with a th instead of a handle
 				if( $handle.hasClass( o.handle ) ){
@@ -110,7 +110,7 @@
 	                .focus()
 					.disableSelection()
 					.css({
-	                    top: elementOffset.top,
+	                    top: elementOffsetTop,
 	                    left: self.currentColumnCollectionOffset.left
 					})
 	                .appendTo( o.appendTarget )
@@ -357,6 +357,7 @@
 		 * @returns copy of table with the selected col
 		 * 
 		 * populates self.dragDisplay
+		 * TODO: name this something better, like select col or get dragDisplay
 		 * 
 		 */		
 		getCol: function(index){
