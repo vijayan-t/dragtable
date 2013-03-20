@@ -111,8 +111,7 @@
 					.disableSelection()
 					.css({
 	                    top: elementOffset.top,
-	                   //using the parentOff.set makes e.pageX reletive to the parent element. This fixes the issue of the drag display not showing up under cursor on drag.
-	                    left: self.currentColumnCollectionOffset.left - elementOffset.left
+	                    left: self.currentColumnCollectionOffset.left
 					})
 	                .appendTo( o.appendTarget )
 				
@@ -132,82 +131,75 @@
 		 * 
 		 */
 		_mousemoveHandler: function( e, appendTarget ){
-							
-				//position the drag dispaly to rel to the middle of the target co
-				var self = this,
-					parentOffsetLeft = this.options.appendTarget.offset().left,
-					//used to position the dragdisplay against
-					startingColumnOffsetX = e.pageX - this.currentColumnCollectionOffset.left,
-				//TODO: make col switching relitvte to the silibing cols, not pageX
-                //start from event cords
-                	prevMouseX = this.currentColumnCollectionOffset.left - parentOffsetLeft,
-					//get the col count, used to contain col swap
-					colCount = self.element[ 0 ]
-									.getElementsByTagName( 'thead' )[ 0 ]
-									.getElementsByTagName( 'tr' )[ 0 ]
-									.getElementsByTagName( 'th' )
-									.length - 1,
-					firstCell = self.currentColumnCollection[0];
-               
-               self._start( e )
-               
-	            $( document ).bind('mousemove.' + self.widgetEventPrefix, function( e ){
-	            	var columnPos = self._setCurrentColumnCollectionOffset(),
-	            		colWidth = firstCell.clientWidth,
-	            		left = e.pageX - parentOffsetLeft - startingColumnOffsetX ;
-
-                    self.dragDisplay
-                    	.css( 'left', left )
-                    
-                    
-                    
-                                      	//TODO: clean this up
-
-                    if( left > self.options.appendTarget[ 0 ].offsetWidth ){
-                    //	console.log( 'hsa scroll', o.parent, e , left )
-                    	//this works!, but we dont know how it will work with an element that has scrol: auto
-                    	
-                    	var target = self.options.appendTarget[0];
-                    	                   	
-                    	console.log( self.dragDisplay.offsetParent() )
-                    	
-                    //	self.dragDisplay.offsetParent()[0].scrollLeft = left + self.dragDisplay.outerWidth()
-                    	if( target.tagName == 'BODY' ){
-                    		window.scroll( left + self.dragDisplay.outerWidth(), window.scrollY );
-                    	}else{
-                    		target.scrollLeft = left + self.dragDisplay.outerWidth();
-                    		
-                    	}
-                    	
-                    }
-                    
-                    
-                    if( ( e.pageX - parentOffsetLeft )  < prevMouseX ){
-                    	//move left
-							var threshold = columnPos.left;
-							
-						//	console.log( 'threshold ',threshold,  e.pageX - startingColumnOffsetX )
-							if( e.pageX  < threshold ){
-								self._swapCol(self.startIndex-1);
-							}
-
-						}else{
-							//move right
-							var threshold = columnPos.left + colWidth ;
-							//console.log('move right ', columnPos.left,' ', threshold, ' ', e.pageX, ' ');
-							//move to the right only if x is greater than threshold and the current col isn' the last one
-							if( e.pageX  > threshold  && colCount != self.startIndex ){
-								//console.info('move right');
-								self._swapCol( self.startIndex + 1 );
-							}
-						}
-						//update mouse position
-						prevMouseX = e.pageX - parentOffsetLeft;
 			
-                })
-                .one( 'mouseup.' + self.widgetEventPrefix ,function(e ){
-                    self._stop( e );
-                });
+			
+			 this._start( e )
+				
+							
+			//position the drag dispaly to rel to the middle of the target co
+			var self = this,
+            	prevMouseX = e.pageX,
+				//get the col count, used to contain col swap
+				colCount = self.element[ 0 ]
+								.getElementsByTagName( 'thead' )[ 0 ]
+								.getElementsByTagName( 'tr' )[ 0 ]
+								.getElementsByTagName( 'th' )
+								.length - 1,
+				halfDragDisplayWidth = self.dragDisplay.outerWidth() / 2;
+           
+           
+           console.log( 'prevMouseX ', prevMouseX )
+           
+          
+           
+            $( document ).bind('mousemove.' + self.widgetEventPrefix, function( e ){
+            	var columnPos = self._setCurrentColumnCollectionOffset(),
+            		left =  ( parseInt( self.dragDisplay[0].style.left ) + (e.pageX - prevMouseX)  );
+            	
+                self.dragDisplay.css( 'left', left )
+                
+                //TODO clean this up
+				if( left > self.options.appendTarget[ 0 ].offsetWidth ) {
+					
+					//	console.log( 'hsa scroll', o.parent, e , left )
+					//this works!, but we dont know how it will work with an element that has scrol: auto
+					var target = self.options.appendTarget[ 0 ];
+					console.log( self.dragDisplay.offsetParent( ) )
+					//	self.dragDisplay.offsetParent()[0].scrollLeft = left + self.dragDisplay.outerWidth()
+					if( target.tagName == 'BODY' ) {
+						window.scroll( left + self.dragDisplay.outerWidth( ), window.scrollY );
+					} else {
+						target.scrollLeft = left + self.dragDisplay.outerWidth( );
+					}
+				}
+
+
+               /*
+                * when moving left and e.pageX and prevMouseX are the same it will trigger right when moving left
+                */                    
+               if( e.pageX  < prevMouseX ){
+                   //move left
+                   var threshold = columnPos.left - halfDragDisplayWidth;
+                   
+                   if( left  < threshold ){
+                   		self._swapCol(self.startIndex-1);
+                   }
+
+				}else{
+				 //move right
+				 	var threshold = columnPos.left + halfDragDisplayWidth ;
+                    //move to the right only if x is greater than threshold and the current col isn' the last one
+                    if( left  > threshold  && colCount != self.startIndex ){
+                    	self._swapCol( self.startIndex + 1 );
+                    }
+				}
+				//update mouse position
+				prevMouseX = e.pageX;
+		
+            })
+            .one( 'mouseup.' + self.widgetEventPrefix ,function(e ){
+                self._stop( e );
+            });
                           
 		},
 		
@@ -346,7 +338,7 @@
         	a.parentNode.insertBefore(b, a);
      	},
      	/*
-     	 * use this instead of jquery's offset, in the cases were using is faster than creating a jquery collection
+     	 * use position needs to be relative to the parent
      	 */
 		_findElementPosition: function( oElement ) {
 			return $(oElement).position();
