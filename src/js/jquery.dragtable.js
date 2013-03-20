@@ -136,13 +136,13 @@
 			//position the drag dispaly to rel to the middle of the target co
 			var self = this,
             	prevMouseX = e.pageX,
+            	halfDragDisplayWidth = self.dragDisplay.outerWidth() / 2,
 				//get the col count, used to contain col swap
 				colCount = self.element[ 0 ]
 								.getElementsByTagName( 'thead' )[ 0 ]
 								.getElementsByTagName( 'tr' )[ 0 ]
 								.getElementsByTagName( 'th' )
-								.length - 1,
-				halfDragDisplayWidth = self.dragDisplay.outerWidth() / 2;
+								.length - 1;
 
             $( document ).bind('mousemove.' + self.widgetEventPrefix, function( e ){
             	var columnPos = self._setCurrentColumnCollectionOffset(),
