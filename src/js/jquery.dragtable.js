@@ -127,13 +127,10 @@
 		 * e.currentTarget is used for figuring out offsetLeft
 		 * getCol must be called before this is 
 		 * 
-		 * appendTarget is either suppied via options or your doing some hacking =) but should be an jquery object
-		 * 
 		 */
-		_mousemoveHandler: function( e, appendTarget ){
-			
-			
-			 this._start( e )
+		_mousemoveHandler: function( e ){
+			//call this first, catch any drag display issures
+			this._start( e )
 				
 							
 			//position the drag dispaly to rel to the middle of the target co
@@ -146,12 +143,7 @@
 								.getElementsByTagName( 'th' )
 								.length - 1,
 				halfDragDisplayWidth = self.dragDisplay.outerWidth() / 2;
-           
-           
-           console.log( 'prevMouseX ', prevMouseX )
-           
-          
-           
+
             $( document ).bind('mousemove.' + self.widgetEventPrefix, function( e ){
             	var columnPos = self._setCurrentColumnCollectionOffset(),
             		left =  ( parseInt( self.dragDisplay[0].style.left ) + (e.pageX - prevMouseX)  );
