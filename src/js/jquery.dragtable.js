@@ -22,7 +22,7 @@
  * "real" cells get a place holder class witch is removed when the dragstop event is triggered
  * 
  * 
- * make it easy to have a button swap colums
+ * make it easy to have a button swap columns
  * 
  * 
  * Events - in order of trigger
@@ -44,7 +44,7 @@
   		//TODO: implement this
   		eventWidgetPrefix: 'dragtable',
 		options: {
-			//used to the col headers, data containted in here is used to set / get the name of the col
+			//used to the col headers, data contained in here is used to set / get the name of the col
 			dataHeader:'data-header',
 			//class name that handles have 
 			handle:'dragtable-drag-handle',
@@ -54,13 +54,13 @@
 			boundary: 'dragtable-drag-boundary',
 			//classnames that get applied to the real td, th
 			placeholder: 'dragtable-col-placeholder',
-			//the drag display will be appended to this element, some reason this is blank, also if your body tag has been zeroed off it wont be excact
+			//the drag display will be appended to this element, some reason this is blank, also if your body tag has been zeroed off it wont be exact
 			appendTarget: $(  document.body ),
 			//if true,this will scroll the appendTarget offsetParent when the dragDisplay is dragged past its boundaries
 			scroll: false
 			
 		},
-		// when a col is dragged use this to find the symantic elements, for speed
+		// when a col is dragged use this to find the semantic elements, for speed
   		tableElemIndex:{  
 			head: '0',
 			body: '1',
@@ -78,7 +78,7 @@
 			this.endIndex = null;
 			//the references to the table cells that are getting dragged
 			this.currentColumnCollection = [];
-			//the rreferences the pposition of the first element in the currentColunmCollection position
+			//the references the position of the first element in the currentColunmCollection position
 			this.currentColumnCollectionOffset = {};
 			//the div wrapping the drag display table
 			this.dragDisplay = $([])
@@ -102,7 +102,7 @@
 				if( $handle.hasClass( o.handle ) ){
 					
 					$handle = $handle.closest('th');
-					//change the target to the th, so the hander can pick up the offsetleft
+					//change the target to the th, so the handler can pick up the offsetleft
 					e.currentTarget = $handle.closest('th')[0]
 				}
 				
@@ -131,11 +131,9 @@
 		 * 
 		 */
 		_mousemoveHandler: function( e ){
-			//call this first, catch any drag display issures
+			//call this first, catch any drag display issues
 			this._start( e )
 				
-							
-			//position the drag dispaly to rel to the middle of the target co
 			var self = this,
 				o = self.options,
             	prevMouseX = e.pageX,
@@ -153,8 +151,7 @@
             		left =  ( parseInt( self.dragDisplay[0].style.left ) + (e.pageX - prevMouseX)  );
             		
                 self.dragDisplay.css( 'left', left )
-                
-                //TODO clean this up
+
 				if( left > appendTargetOP.scrollLeft && o.scroll == true ) {
 					
 					var target = o.appendTarget[ 0 ],
