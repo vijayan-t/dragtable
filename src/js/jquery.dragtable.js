@@ -294,24 +294,6 @@
 		 	return tds;
 		},
 		/*
-		 * return and array of children excluding text nodes
-		 * used only on this.element
-		 * @deprecated
-		 */
-		_getChildren: function(){
-			
-			var children = this.element[0].childNodes,
-				ret = [];
-			for(var i = 0, length = children.length; i < length; i++){
-				var e = children[i];
-				if(e.nodeType == 1){
-					ret.push(e);
-				}
-			}
-			
-			return ret;
-		},
-		/*
 		 * returns all element attrs in a string key="value" key2="value"
 		 */
 		_getElementAttributes: function(element){
@@ -326,7 +308,7 @@
 
      	/*
      	 * faster than swap nodes
-     	 * only works if a b parent are the same, works great for colums
+     	 * only works if a b parent are the same, works great for columns
      	 */
      	_swapCells: function(a, b) {
         	a.parentNode.insertBefore(b, a);
@@ -338,7 +320,7 @@
 			return $(oElement).position();
 		},
 		/*
-		 * used to tirgger optional events
+		 * used to trigger optional events
 		 */
 		_eventHelper: function(eventName ,eventObj, additionalData){
 			return this._trigger( 
