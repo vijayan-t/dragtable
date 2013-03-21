@@ -274,7 +274,7 @@
 				
 				var parentNodeName = td.parentNode.parentNode.nodeName;
 				tds.array.push(td);
-				//faster to leave out ^ and $ in the regularexpression
+				//faster to leave out ^ and $ in the regular expression
 				if( tbodyRegex.test( parentNodeName ) ){
 					
 					tdsSemanticBody.push( td );
@@ -313,12 +313,7 @@
      	_swapCells: function(a, b) {
         	a.parentNode.insertBefore(b, a);
      	},
-     	/*
-     	 * use position needs to be relative to the parent
-     	 */
-		_findElementPosition: function( oElement ) {
-			return $(oElement).position();
-		},
+
 		/*
 		 * used to trigger optional events
 		 */
@@ -411,7 +406,7 @@
 		
 		
 		_setCurrentColumnCollectionOffset: function(){
-			return this.currentColumnCollectionOffset = this._findElementPosition( this.currentColumnCollection[0] );
+			return this.currentColumnCollectionOffset = $( this.currentColumnCollection[0] ).position();
 		},
 		
 		/*
