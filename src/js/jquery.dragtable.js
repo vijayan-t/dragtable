@@ -113,7 +113,8 @@
 					.disableSelection()
 					.css({
 	                    top: elementOffsetTop,
-	                    left: self.currentColumnCollectionOffset.left
+	                    //need to account for the scroll left of the append target, other wise the display will be off by that many pix
+	                    left: ( self.currentColumnCollectionOffset.left + o.appendTarget[0].scrollLeft )
 					})
 	                .appendTo( o.appendTarget )
 				
@@ -148,20 +149,23 @@
 
             $( document ).bind('mousemove.' + self.widgetEventPrefix, function( e ){
             	var columnPos = self._setCurrentColumnCollectionOffset(),
-            		left =  ( parseInt( self.dragDisplay[0].style.left ) + (e.pageX - prevMouseX)  );
+            		left =  ( parseInt( self.dragDisplay[0].style.left ) + o.appendTarget[0].scrollLeft +(e.pageX - prevMouseX)  );
             		
                 self.dragDisplay.css( 'left', left )
-
-				if( left > appendTargetOP.scrollLeft && o.scroll == true ) {
-					
+                
+                console.log( o.appendTarget[0].clientWidth, left )
+                //TODO: make this go right
+				if( left > o.appendTarget[0].clientWidth && o.scroll == true ) {
+					console.log(appendTargetOP )
 					var target = o.appendTarget[ 0 ],
-						scrollLeft = halfDragDisplayWidth * 2  + left;
+						scrollLeft =  left - appendTargetOP.clientWidth;
 					//console.log( self.dragDisplay.offsetParent( ) )
 					//	self.dragDisplay.offsetParent()[0].scrollLeft = left + self.dragDisplay.outerWidth()
 					if( target.tagName == 'BODY' ) {
 						window.scroll( scrollLeft, window.scrollY );
 					} else {
-						target.scrollLeft = scrollLeft;
+						//TODO: add a limit to the scrol left
+						target.scrollLeft = ( left + halfDragDisplayWidth * 2 ) - o.appendTarget[0].clientWidth ;
 					}
 				}
 
