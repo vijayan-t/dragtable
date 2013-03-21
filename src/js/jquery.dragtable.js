@@ -55,7 +55,9 @@
 			//classnames that get applied to the real td, th
 			placeholder: 'dragtable-col-placeholder',
 			//the drag display will be appended to this element, some reason this is blank, also if your body tag has been zeroed off it wont be excact
-			appendTarget: $(  document.body )
+			appendTarget: $(  document.body ),
+			//if true,this will scroll the appendTarget offsetParent when the dragDisplay is dragged past its boundaries
+			scroll: false
 			
 		},
 		// when a col is dragged use this to find the symantic elements, for speed
@@ -135,8 +137,10 @@
 							
 			//position the drag dispaly to rel to the middle of the target co
 			var self = this,
+				o = self.options,
             	prevMouseX = e.pageX,
             	halfDragDisplayWidth = self.dragDisplay.outerWidth() / 2,
+            	appendTargetOP = o.appendTarget.offsetParent()[0],
 				//get the col count, used to contain col swap
 				colCount = self.element[ 0 ]
 								.getElementsByTagName( 'thead' )[ 0 ]
@@ -147,27 +151,28 @@
             $( document ).bind('mousemove.' + self.widgetEventPrefix, function( e ){
             	var columnPos = self._setCurrentColumnCollectionOffset(),
             		left =  ( parseInt( self.dragDisplay[0].style.left ) + (e.pageX - prevMouseX)  );
-            	
+            		
                 self.dragDisplay.css( 'left', left )
                 
                 //TODO clean this up
-				if( left > self.options.appendTarget[ 0 ].offsetWidth ) {
+				if( left > appendTargetOP.scrollLeft && o.scroll == true ) {
 					
-					//	console.log( 'hsa scroll', o.parent, e , left )
-					//this works!, but we dont know how it will work with an element that has scrol: auto
-					var target = self.options.appendTarget[ 0 ];
-					console.log( self.dragDisplay.offsetParent( ) )
+					var target = o.appendTarget[ 0 ],
+						scrollLeft = halfDragDisplayWidth * 2  + left;
+					//console.log( self.dragDisplay.offsetParent( ) )
 					//	self.dragDisplay.offsetParent()[0].scrollLeft = left + self.dragDisplay.outerWidth()
 					if( target.tagName == 'BODY' ) {
-						window.scroll( left + self.dragDisplay.outerWidth( ), window.scrollY );
+						window.scroll( scrollLeft, window.scrollY );
 					} else {
-						target.scrollLeft = left + self.dragDisplay.outerWidth( );
+						target.scrollLeft = scrollLeft;
 					}
 				}
 
 
                /*
                 * when moving left and e.pageX and prevMouseX are the same it will trigger right when moving left
+                * 
+                * it should only swap cols when the col dragging is half over the prev/next col
                 */                    
                if( e.pageX  < prevMouseX ){
                    //move left
