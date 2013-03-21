@@ -138,8 +138,10 @@
 			var self = this,
 				o = self.options,
             	prevMouseX = e.pageX,
-            	halfDragDisplayWidth = self.dragDisplay.outerWidth() / 2,
+            	dragDisplayWidth = self.dragDisplay.outerWidth(),
+            	halfDragDisplayWidth = dragDisplayWidth / 2,
             	appendTargetOP = o.appendTarget.offsetParent()[0],
+            	scroll = o.scroll,
 				//get the col count, used to contain col swap
 				colCount = self.element[ 0 ]
 								.getElementsByTagName( 'thead' )[ 0 ]
@@ -149,27 +151,11 @@
 
             $( document ).bind('mousemove.' + self.widgetEventPrefix, function( e ){
             	var columnPos = self._setCurrentColumnCollectionOffset(),
-            		left =  ( parseInt( self.dragDisplay[0].style.left ) + o.appendTarget[0].scrollLeft +(e.pageX - prevMouseX)  );
-            		
+            		mouseXDiff = e.pageX - prevMouseX,
+            		appendTarget = o.appendTarget[0],
+            		left =  ( parseInt( self.dragDisplay[0].style.left ) + mouseXDiff  );
                 self.dragDisplay.css( 'left', left )
                 
-                console.log( o.appendTarget[0].clientWidth, left )
-                //TODO: make this go right
-				if( left > o.appendTarget[0].clientWidth && o.scroll == true ) {
-					console.log(appendTargetOP )
-					var target = o.appendTarget[ 0 ],
-						scrollLeft =  left - appendTargetOP.clientWidth;
-					//console.log( self.dragDisplay.offsetParent( ) )
-					//	self.dragDisplay.offsetParent()[0].scrollLeft = left + self.dragDisplay.outerWidth()
-					if( target.tagName == 'BODY' ) {
-						window.scroll( scrollLeft, window.scrollY );
-					} else {
-						//TODO: add a limit to the scrol left
-						target.scrollLeft = ( left + halfDragDisplayWidth * 2 ) - o.appendTarget[0].clientWidth ;
-					}
-				}
-
-
                /*
                 * when moving left and e.pageX and prevMouseX are the same it will trigger right when moving left
                 * 
@@ -179,6 +165,22 @@
                    //move left
                    var threshold = columnPos.left - halfDragDisplayWidth;
                    
+                   
+                   //scroll left
+				 	if( left < ( appendTarget.clientWidth  - dragDisplayWidth ) && scroll == true ) {
+				 		var scrollLeft =  appendTarget.scrollLeft + mouseXDiff
+				 		/*
+				 		 * firefox does scroll the body with target being body but chome does
+				 		 */
+				 		if( appendTarget.tagName == 'BODY' ) {
+							window.scroll( window.scrollX + scrollLeft, window.scrollY );
+						} else {
+							appendTarget.scrollLeft = scrollLeft;
+						}
+				 		
+				 	}
+                   
+                   
                    if( left  < threshold ){
                    		self._swapCol(self.startIndex-1);
                    }
@@ -186,6 +188,23 @@
 				}else{
 				 //move right
 				 	var threshold = columnPos.left + halfDragDisplayWidth ;
+				 	
+				 	//scroll right
+				 	if( left > (appendTarget.clientWidth - dragDisplayWidth ) && scroll == true ) {
+				 		//console.log(  o.appendTarget[0].clientWidth + (e.pageX - prevMouseX))
+				 		
+				 		var scrollLeft =  appendTarget.scrollLeft + mouseXDiff
+				 		/*
+				 		 * firefox does scroll the body with target being body but chome does
+				 		 */
+				 		if( appendTarget.tagName == 'BODY' ) {
+							window.scroll( window.scrollX + scrollLeft, window.scrollY );
+						} else {
+							appendTarget.scrollLeft = scrollLeft;
+						}
+				 		
+				 	}
+				 	
                     //move to the right only if x is greater than threshold and the current col isn' the last one
                     if( left  > threshold  && colCount != self.startIndex ){
                     	self._swapCol( self.startIndex + 1 );
