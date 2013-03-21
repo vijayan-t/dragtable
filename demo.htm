@@ -20,6 +20,7 @@ table thead th{
 }
 table tbody td{
 	padding:3px 10px;
+	white-space: no
 }
 table tbody tr:nth-of-type(2n+1) td{
 	background:#7AA6DC;
@@ -42,17 +43,20 @@ table tbody tr:nth-of-type(2n+1) td{
 
 .tablewrapper{
 	position: relative;
-	
+	overflow: scroll;
+	width: 400px;
 	margin: 3em;
 }
-
+.tablewrapper table{
+	width: 100%;
+}
 .test3{
-	border-right: 5px solid red !important;
+	/*border-right: 5px solid red !important;*/
 }
 
 	</style>
 	
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="jquery-ui.css" type="text/css" />
     
@@ -80,34 +84,7 @@ $('table').each(function(){
 		$(this).dragtable({
 		placeholder: 'dragtable-col-placeholder test3',
 		items: 'thead th:not( .notdraggable ):not( :has( .dragtable-drag-handle ) ), .dragtable-drag-handle',
-		parent: $(this).parent(),
-		change:function(e,ui){
-			//console.info('widget option change callback triggered');
-			//console.log('CALLBACK DATA ',ui);
-		},
-		displayHelper: function(e,ui){
-			//console.log('display helpers ',ui);
-			//ui.draggable.append('<span>I was added<br>in the callback</span>')
-		},
-		start: function(e,ui){
-			console.log('start', e, ui)
-		},
-		stop: function(e,ui){
-			console.log('stop', e, ui)
-			
-			//$(this).dragtable('dropCol')
-			
-			 // $( document )
-			 	 // .unbind( 'mousemove.dragtable' )
-// 			
-			// ui.dragDisplay.animate({
-				// left: ui.columnOffset.x
-			// })
-// 			
-			// return false;
-			
-			//$(this).data('dragtable').getCol(ui.endIndex)
-		}
+		appendTarget: $(this).parent()
 	});
 	
 	
@@ -126,7 +103,7 @@ $('table').each(function(){
 <h1>20 cells</h1>
 <hr />
 <div class="tablewrapper">
-	
+	<p> table reltive positioning  </p>
 		<table id="one">
 		<thead class="test">
 			<tr>
@@ -152,7 +129,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -212,7 +189,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -252,7 +229,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -292,7 +269,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -332,7 +309,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -372,7 +349,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -429,7 +406,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -469,46 +446,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
-				<td>$1000.00</td>
-			</tr>
-			<tr>
-				<td>11534</td>
-				<td>Ben</td>
-				<td>Dover</td>
-				<td>555-443-5555</td>
-				<td>pink</td>
-				<td>$200.00</td>
-			</tr>
-			<tr>
-				<td>2153</td>
-				<td>Goldy</td>
-				<td>Dilgger</td>
-				<td>555-555-2562</td>
-				<td>blue</td>
-				<td>$200.40</td>
-			</tr>
-			<tr>
-				<td>1</td>
-				<td>Steve</td>
-				<td>Southwest</td>
-				<td>554-555-3562</td>
-				<td>orange</td>
-				<td>$710.40</td>
-			</tr><tr>
-				<td>10234</td>
-				<td>John</td>
-				<td>Smith</td>
-				<td>555-555-5555</td>
-				<td>orange</td>
-				<td>$2.00</td>
-			</tr>
-			<tr>
-				<td>102288</td>
-				<td>Jane</td>
-				<td>Smith</td>
-				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -547,7 +485,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -586,7 +524,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -625,7 +563,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -664,7 +602,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -703,7 +641,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -742,7 +680,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -781,7 +719,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -820,7 +758,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -859,7 +797,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -898,7 +836,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -937,7 +875,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -976,7 +914,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1015,7 +953,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1054,7 +992,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1093,7 +1031,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1132,7 +1070,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1171,7 +1109,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1210,7 +1148,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1249,7 +1187,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1288,7 +1226,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1327,7 +1265,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1366,7 +1304,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1405,7 +1343,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1444,7 +1382,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1483,7 +1421,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1522,7 +1460,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1561,7 +1499,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1600,7 +1538,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1639,7 +1577,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1678,7 +1616,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1717,7 +1655,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1756,7 +1694,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1795,7 +1733,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1834,7 +1772,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1873,7 +1811,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1912,7 +1850,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1951,7 +1889,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -1990,7 +1928,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2029,7 +1967,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2068,7 +2006,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2107,7 +2045,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2146,7 +2084,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2185,7 +2123,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2224,7 +2162,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2263,7 +2201,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2302,7 +2240,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2341,7 +2279,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2380,7 +2318,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2419,7 +2357,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2458,7 +2396,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2497,7 +2435,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2536,7 +2474,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2575,7 +2513,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2614,7 +2552,7 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
@@ -2653,7 +2591,46 @@ $('table').each(function(){
 				<td>Jane</td>
 				<td>Smith</td>
 				<td>555-445-5555</td>
-				<td>purplue</td>
+				<td>purple</td>
+				<td>$1000.00</td>
+			</tr>
+			<tr>
+				<td>11534</td>
+				<td>Ben</td>
+				<td>Dover</td>
+				<td>555-443-5555</td>
+				<td>pink</td>
+				<td>$200.00</td>
+			</tr>
+			<tr>
+				<td>2153</td>
+				<td>Goldy</td>
+				<td>Dilgger</td>
+				<td>555-555-2562</td>
+				<td>blue</td>
+				<td>$200.40</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>Steve</td>
+				<td>Southwest</td>
+				<td>554-555-3562</td>
+				<td>orange</td>
+				<td>$710.40</td>
+			</tr><tr>
+				<td>10234</td>
+				<td>John</td>
+				<td>Smith</td>
+				<td>555-555-5555</td>
+				<td>orange</td>
+				<td>$2.00</td>
+			</tr>
+			<tr>
+				<td>102288</td>
+				<td>Jane</td>
+				<td>Smith</td>
+				<td>555-445-5555</td>
+				<td>purple</td>
 				<td>$1000.00</td>
 			</tr>
 			<tr>
