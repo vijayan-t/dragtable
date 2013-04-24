@@ -23,8 +23,6 @@ test("dragtable test", function(){
 	 */
 	S('#one th[data-header=color]').drag('-500 +0', function(){
 		ok( S('#one th:first').attr('data-header') == 'id', 'cant be dragged past boundary')
-		
-		ok( S('#one th:first').next().attr('data-header') == 'color', 'tried to drag past boundary, is next to it')
 	})
 	
 	
@@ -34,15 +32,15 @@ test("dragtable test", function(){
 	S('#one th[data-header=phone_number] .dragtable-drag-handle').drag('th[data-header=id]', function(){
 		ok( S('#one th:first').attr('data-header') == 'id', 'handle drag')
 		
-		ok( S('#one th:first').next().attr('data-header') == 'phone_number', 'tried to drag past boundary, is next to it')
+		ok( S('#one th:first').next().attr('data-header') == 'phone_number', 'drag via handle')
 	})
 	/*
 	 * cant be dragged 
 	 * notdraggable
 	 */
-	var notdraggablePrevHeader = 'last_name';
 	S('#one th[data-header=salary]').drag('-500 +0', function(){
-		ok( S('#one th[data-header=salary]').prev().attr('data-header') == 'last_name', 'notdraggable cant be dragged')
+		//alert( S('#one th[data-header=salary]').prev().attr('data-header'))
+		ok( S('#one th[data-header=salary]').prev().attr('data-header') == 'color', 'notdraggable cant be dragged')
 		
 		
 	})
@@ -51,7 +49,7 @@ test("dragtable test", function(){
 	 * parent offset scroll
 	 */
 	S('#one th[data-header=last_name]').drag('+2000 +0', function(){
-		//ok( S('#one th[data-header=salary]').prev().attr('data-header') == 'last_name', 'notdraggable cant be dragged')
+		ok( S('#one th[data-header=salary]').prev().attr('data-header') == 'last_name', 'notdraggable cant be dragged')
 		
 		
 	})
